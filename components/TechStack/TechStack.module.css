@@ -1,0 +1,40 @@
+.techStackSection {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    user-select: none;
+    margin: 10% 0 20px 20%;
+}
+
+.sectionTitle {
+    font-family: 'Mulish', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    border-right: 3px solid #2D2E6B;
+    padding: 0 20px;
+    color: #2D2E6B;
+    text-wrap: nowrap;
+}
+
+.skillsList {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 800px) {
+    .techStackSection {
+        gap: 10px;
+        margin: 15% 0;
+        flex-direction: column;
+    }
+
+    .sectionTitle {
+        padding: 0 10px;
+        font-size: 24px;
+        border: none;
+        margin: 20px 0;
+    }
+}

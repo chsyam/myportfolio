@@ -1,0 +1,112 @@
+.introduction {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    user-select: none;
+    flex-wrap: wrap-reverse;
+}
+
+.summaryPart {
+    width: 35%;
+}
+
+.workTitle {
+    font-size: 60px;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.1;
+}
+
+.summary {
+    font-size: 20px;
+    font-family: 'Poppins', sans-serif;
+    margin: 20px 0 20px 0;
+    color: #555555;
+}
+
+.imagePart {
+    width: 300px;
+    height: 300px;
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    background-image: linear-gradient(45deg, #08aeea, #2af598, 100%);
+    border: 3px solid #000;
+
+    background: url("./../Images/my_selfie.jpg") no-repeat;
+    background-size: cover;
+    background-position: top center;
+    background-blend-mode: multiply;
+    animation: imageAnimation 8s ease-in-out infinite;
+
+    box-shadow: 1px 1px 8px gray;
+}
+
+@keyframes imageAnimation {
+    0% {
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    }
+
+    50% {
+        border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+    }
+
+    100% {
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    }
+}
+
+.platformLinks {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    cursor: pointer;
+    gap: 20px;
+    margin: 10px 0;
+    height: 40px;
+}
+
+.resumeButton {
+    height: 40px;
+    border-radius: 5px;
+    background: #134F5C;
+    line-height: 40px;
+    font-size: 24px;
+    padding: 0 15px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.resumeButton a {
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+.techPlatforms {
+    line-height: 40px;
+    height: 40px;
+}
+
+@media (max-width: 800px) {
+    .introduction {
+        width: 100%;
+    }
+
+    .summaryPart {
+        width: 90%;
+    }
+
+    .workTitle {
+        text-align: center;
+        font-weight: 700;
+        font-size: 30px;
+    }
+
+    .summary {
+        font-size: 16px;
+        line-height: 1.5;
+        text-align: center;
+    }
+
+    .resumeButton {
+        font-size: 22px;
+    }
+}
