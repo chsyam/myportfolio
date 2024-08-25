@@ -1,0 +1,193 @@
+.editBlock {
+    background-color: #FFF;
+    border-radius: 5px;
+    font-family: 'Poppins', sans-serif;
+    margin: 40px;
+    padding: 20px;
+    box-shadow: 1px 1px 8px #9d9d9d;
+}
+
+.editBlock .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+    font-size: 30px;
+    font-weight: 600;
+}
+
+.updateButton {
+    background-color: #4D3E5B;
+    color: #FFF;
+    border-radius: 30px;
+    font-weight: 500;
+    width: 200px;
+    height: 50px;
+    font-size: 18px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.photoLabel {
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin: 20px;
+    flex-wrap: wrap;
+    width: max-content;
+}
+
+.userIcon Image {
+    border: 1px solid #dadada;
+    width: 150px;
+    height: 150px;
+    background: #F5F6F8;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 40px;
+    color: #FFF;
+    border-radius: 50%;
+}
+
+.resumeIcon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    color: #000;
+}
+
+.labelText {
+    border: 1px solid #aeaeae;
+    background: #f9f9f9;
+    border-radius: 30px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.inputField {
+    margin: 20px 20px 0 0;
+}
+
+.inputField input,
+.inputField textarea {
+    width: 98%;
+    border-radius: 5px;
+    outline: none;
+    border: 1px solid #dadada;
+    padding: 10px 20px;
+    font-size: 18px;
+    resize: none;
+    background-color: #F3F4F6;
+    font-family: 'Poppins', sans-serif;
+}
+
+.platformLinks,
+.skillItems {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: left;
+    margin: 20px 0 0 0;
+}
+
+.platform {
+    padding: 5px 10px;
+    background: #e7e7e7;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    width: max-content;
+    gap: 3px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.addedPlatformsSection {
+    margin: 20px 0;
+}
+
+.addedPlatform,
+.addedSkill {
+    margin: 20px 0;
+}
+
+.inputLink {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 18px;
+}
+
+.inputLink input {
+    border-radius: 5px;
+    outline: none;
+    border: 1px solid #dadada;
+    padding: 0 20px;
+    background-color: #dedede;
+    font-family: 'Poppins', sans-serif;
+    height: 40px;
+    width: 94%;
+}
+
+.addedSkillSection {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+    gap: 20px;
+    margin: 15px 0;
+}
+
+.addedSkill {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 5px;
+
+    background-color: #dadada;
+    width: max-content;
+    padding: 3px 7px;
+    border-radius: 7px;
+}
+
+.deleteButton {
+    border-radius: 5px;
+    height: 30px;
+    padding: 0 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 25px;
+    cursor: pointer;
+    color: #e41111;
+}
+
+.searchBar {
+    background-color: #F3F4F6;
+    height: 40px;
+    border: 1px solid #F3F4F6;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 10px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.searchBar input {
+    width: 90%;
+    height: 40px;
+    outline: none;
+    border: none;
+    background-color: #F3F4F6;
+}

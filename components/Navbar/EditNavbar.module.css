@@ -1,4 +1,4 @@
-.navbar {
+.edit_navbar {
     height: 90px;
     display: flex;
     justify-content: space-between;
@@ -16,16 +16,39 @@
     user-select: none;
 }
 
-.navbar__logo {
+.eidt_navbar__logo {
     font-size: 24px;
     font-weight: 700;
     cursor: pointer;
     padding: 0 10px;
     transition: 0.3s all ease-in-out;
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.editButton {
+    border-radius: 50%;
+    padding: 5px 10px 0 10px;
+}
+
+.editForm input {
+    padding: 10px 15px;
+    font-family: 'Poppins', sans-serif;
+    outline: none;
+    border-radius: 5px;
+}
+
+.editUsername {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
 }
 
 @media (max-width: 800px) {
-    .navbar {
+    .edit_navbar {
         height: 70px;
         padding: 0 3%;
     }
