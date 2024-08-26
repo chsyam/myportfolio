@@ -8,21 +8,35 @@ import Python from "../Images/Icons/Python";
 import Java from "../Images/Icons/Java";
 import SpringBoot from "../Images/Icons/SpringBoot";
 
-export default function TechStack() {
+export default function TechStack({ portfolioData }) {
     return (
         <div className={styles.techStackSection}>
             <div className={styles.sectionTitle}>
-                Tech stack
+                Skills
             </div>
             <div className={styles.skillsList}>
-                <Html height="60px" width="60px" />
-                <CSS height="60px" width="60px" />
-                <ReactJS height="60px" width="60px" />
-                <NextJS height="60px" width="60px" />
-                <SQL height="60px" width="60px" />
-                <Python heigh="60px" width="60px" />
-                <Java heigh="60px" width="60px" />
-                <SpringBoot heigh="60px" width="60px" />
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div className={styles.skillType}>
+                                    Technical Skills
+                                </div>
+                            </td>
+                            <td className={styles.skillsTD}>
+                                {
+                                    portfolioData.skills.map((skill, index) => {
+                                        return skill.type === "technical" && (
+                                            <div className={styles.skillCell} key={index}>
+                                                {skill.name}
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     );

@@ -11,7 +11,8 @@ import { getDownloadURL, uploadBytesResumable, ref as storageRef } from "firebas
 import Image from "next/image";
 import Link from "next/link";
 
-export default function Home({ data }) {
+export default function Home({ objId, data }) {
+    console.log("objId, data", objId, data)
     const [searchTerm, setSearchTerm] = useState("");
     const [skillSearchTerm, setSkillSearchTerm] = useState("");
     const [filteredPlatforms, setFilteredPlatforms] = useState([]);
@@ -21,6 +22,7 @@ export default function Home({ data }) {
     const [uploadProgress, setUploadProgress] = useState(0);
     const [selfieProgess, setSelfieProgess] = useState(0);
     const [selfieError, setSelfieError] = useState("");
+    const [iframeSrc, setIframeSrc] = useState("https://myportfolio-henna-six.vercel.app");
 
     const platformLinks = [
         { name: "LinkedIn", link: '' },
@@ -114,24 +116,48 @@ export default function Home({ data }) {
         })
     }
 
-    const handleSubmit = () => {
-        try {
-            const newDocumentRef = push(dbRef(realtimeDB, 'portfolio/'));
-            set(newDocumentRef, portfolioData)
-                .then(() => {
-                    alert("Portfolio published successfully");
-                    // window.location.reload();
-                })
-                .catch((error) => {
-                    alert("Error publishing Portfolio. Please try again later")
-                    console.error("Error writing document: ", error, "Please try again later");
-                    // window.location.reload();
-                });
-        } catch (error) {
-            console.log(error);
-            alert("Error publishing Portfolio. Please try again later")
-            // window.location.reload();
+    const handleReloadIframe = () => {
+        setIframeSrc("");
+        setTimeout(() => {
+            setIframeSrc("https://myportfolio-henna-six.vercel.app/");
+        }, 0);
+    }
+
+    const handleSubmit = async () => {
+        const response = await fetch(`https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/portfolio/${objId}.json`, {
+            method: 'PATCH', // PATCH for updating specific fields
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(portfolioData),
+        });
+
+        const result = await response.json();
+        console.log('Update successful:', result);
+        if (result) {
+            console.log("handleReloadIframe")
+            handleReloadIframe();
+        } else {
+            alert("something went wrong while updating")
         }
+
+        // try {
+        //     const newDocumentRef = push(dbRef(realtimeDB, 'portfolio/'));
+        //     set(newDocumentRef, portfolioData)
+        //         .then(() => {
+        //             alert("Portfolio published successfully");
+        //             // window.location.reload();
+        //         })
+        //         .catch((error) => {
+        //             alert("Error publishing Portfolio. Please try again later")
+        //             console.error("Error writing document: ", error, "Please try again later");
+        //             // window.location.reload();
+        //         });
+        // } catch (error) {
+        //     console.log(error);
+        //     alert("Error publishing Portfolio. Please try again later")
+        //     // window.location.reload();
+        // }
     }
 
     const handleChange = (name, value) => {
@@ -197,220 +223,241 @@ export default function Home({ data }) {
     }
 
     return (
-        <div className={styles.editPage}>
-            <div className={styles.editBlock}>
-                <div className={styles.header}>
-                    <div className={styles.title}>Personal Website</div>
-                    <div className={styles.updateButton} onClick={() => handleSubmit()}>
-                        <div>
-                            <MdUpdate style={{ fontSize: '25px', paddingTop: '7px' }} />
+        <div className={styles.editPageView}>
+            <div className={styles.editPage}>
+                <div className={styles.editBlock}>
+                    <div className={styles.header}>
+                        <div className={styles.title}>Personal Website</div>
+                        <div className={styles.updateButton} onClick={() => handleSubmit()}>
+                            <div>
+                                <MdUpdate style={{ fontSize: '25px', paddingTop: '7px' }} />
+                            </div>
+                            <div>Update</div>
                         </div>
-                        <div>Update</div>
                     </div>
                 </div>
-            </div>
-            <div className={styles.editBlock}>
-                <div className={styles.header}>Photo</div>
-                <label htmlFor="file-upload" className={styles.photoLabel}>
-                    <div className={styles.userIcon}>
+                <div className={styles.editBlock}>
+                    <div className={styles.header}>Photo</div>
+                    <label htmlFor="file-upload" className={styles.photoLabel}>
+                        <div className={styles.userIcon}>
+                            {
+                                (portfolioData.selfieURL === "") ? (
+                                    <FaUserAlt />
+                                ) : (
+                                    <Image
+                                        alt="user image"
+                                        src={`${portfolioData.selfieURL}`}
+                                        style={{ borderRadius: "50%" }}
+                                        height="150" width="150"
+                                    />
+                                )
+                            }
+                        </div>
+                        <div className={styles.labelText}>
+                            <FaEdit />Add Photo
+                        </div>
+                        {selfie ? selfie?.name : ""}
+                    </label>
+                    <div
+                        onClick={() => handleSelfieUpload()}
+                        className={styles.updateButton}
+                    >Upload</div>
+                    <input style={{ display: 'none' }}
+                        onChange={(event) => setSelfie(event.target.files[0])}
+                        id="file-upload" type="file"
+                    />
+                    {
+                        (selfieProgess > 0 && selfieProgess < 100) && (
+                            <div className={styles.uploadStatus}>
+                                <div>{`0%`}</div>
+                                <div><progress value={selfieProgess} max="100" /></div>
+                                <div>{`${Math.round(selfieProgess)}%`}</div>
+                            </div>
+                        )
+                    }
+                </div>
+                <div className={styles.editBlock}>
+                    <div className={styles.header}>Name</div>
+                    <div className={styles.inputField}>
+                        <input
+                            name="username"
+                            value={portfolioData.username || ""}
+                            onChange={(e) => handleChange(e.target.name, e.target.value)}
+                            type="text"
+                            placeholder="Enter your name"
+                        />
+                    </div>
+                </div>
+                <div className={styles.editBlock}>
+                    <div className={styles.header}>Job Title</div>
+                    <div className={styles.inputField}>
+                        <input
+                            type="text"
+                            name="workTitle"
+                            value={portfolioData.workTitle || ""}
+                            onChange={(e) => handleChange(e.target.name, e.target.value)}
+                            placeholder="Enter your work title"
+                        />
+                    </div>
+                </div>
+                <div className={styles.editBlock}>
+                    <div className={styles.header}>Intro text</div>
+                    <div className={styles.inputField}>
+                        <textarea
+                            name="description"
+                            rows={5}
+                            type="text"
+                            value={portfolioData.description || ""}
+                            onChange={(e) => handleChange(e.target.name, e.target.value)}
+                            placeholder="Enter your intro briefly"
+                        ></textarea>
+                    </div>
+                </div>
+                <div className={styles.editBlock}>
+                    <div className={styles.header}>Resume</div>
+                    <label htmlFor="resume-upload" className={styles.photoLabel}>
+                        <div className={styles.resumeIcon}>
+                            {portfolioData.resumeURL === '' ? "No file selected" : (
+                                <Link style={{ textDecoration: "none" }} href={`${portfolioData.resumeURL}`} target="_blank">previous resume</Link>
+                            )}
+                        </div>
+                        <div className={styles.labelText}>
+                            <FaEdit /> Resume
+                        </div>
+                        {file ? file?.name : ""}
+                    </label>
+                    <div
+                        onClick={() => { console.log(file); handleFileUpload() }}
+                        className={styles.updateButton}
+                    >Upload</div>
+                    <input style={{ display: 'none' }}
+                        onChange={(event) => setFile(event.target.files[0])}
+                        id="resume-upload" type="file"
+                    />
+                    {
+                        (uploadProgress > 0 && uploadProgress < 100) && (
+                            <div className={styles.uploadStatus}>
+                                <div>{`0%`}</div>
+                                <div><progress value={uploadProgress} max="100" /></div>
+                                <div>{`${Math.round(uploadProgress)}%`}</div>
+                            </div>
+                        )
+                    }
+                </div>
+                <div className={styles.editBlock}>
+                    <div className={styles.header}>Networking Sites</div>
+                    <div className={styles.addedPlatformsSection}>
                         {
-                            (portfolioData.selfieURL === "") ? (
-                                <FaUserAlt />
-                            ) : (
-                                <Image
-                                    alt="user image"
-                                    src={`${portfolioData.selfieURL}`}
-                                    style={{ borderRadius: "50%" }}
-                                    height="150" width="150"
-                                />
-                            )
+                            Object.keys(portfolioData.platformLinks).map((key, index) => {
+                                return (
+                                    <div key={index} className={styles.addedPlatform}>
+                                        <div>{key}</div>
+                                        <div className={styles.inputLink}>
+                                            <input type="text" placeholder="Enter link" name={`${key}`} value={portfolioData.platformLinks[key]} onChange={(e) => { handleLink(key, e.target.value) }} />
+                                            <div
+                                                onClick={() => handleTrashClick(key)} className={styles.deleteButton}
+                                            >
+                                                <MdDeleteOutline />
+                                            </div>
+                                        </div>
+                                    </div>
+                                )
+                            })
                         }
                     </div>
-                    <div className={styles.labelText}>
-                        <FaEdit />Add Photo
+                    <div className={styles.searchBar}>
+                        <div style={{ fontSize: '24px', paddingTop: '10px' }}><IoSearch /></div>
+                        <input value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} type="text" placeholder="Search for a platform" />
                     </div>
-                    {selfie ? selfie?.name : ""}
-                </label>
-                <div
-                    onClick={() => handleSelfieUpload()}
-                    className={styles.updateButton}
-                >Upload</div>
-                <input style={{ display: 'none' }}
-                    onChange={(event) => setSelfie(event.target.files[0])}
-                    id="file-upload" type="file"
-                />
-                {
-                    (selfieProgess > 0 && selfieProgess < 100) && (
-                        <div className={styles.uploadStatus}>
-                            <div>{`0%`}</div>
-                            <div><progress value={selfieProgess} max="100" /></div>
-                            <div>{`${Math.round(selfieProgess)}%`}</div>
-                        </div>
-                    )
-                }
-            </div>
-            <div className={styles.editBlock}>
-                <div className={styles.header}>Name</div>
-                <div className={styles.inputField}>
-                    <input
-                        name="username"
-                        value={portfolioData.username || ""}
-                        onChange={(e) => handleChange(e.target.name, e.target.value)}
-                        type="text"
-                        placeholder="Enter your name"
-                    />
-                </div>
-            </div>
-            <div className={styles.editBlock}>
-                <div className={styles.header}>Job Title</div>
-                <div className={styles.inputField}>
-                    <input
-                        type="text"
-                        name="workTitle"
-                        value={portfolioData.workTitle || ""}
-                        onChange={(e) => handleChange(e.target.name, e.target.value)}
-                        placeholder="Enter your work title"
-                    />
-                </div>
-            </div>
-            <div className={styles.editBlock}>
-                <div className={styles.header}>Intro text</div>
-                <div className={styles.inputField}>
-                    <textarea
-                        name="description"
-                        rows={5}
-                        type="text"
-                        value={portfolioData.description || ""}
-                        onChange={(e) => handleChange(e.target.name, e.target.value)}
-                        placeholder="Enter your intro briefly"
-                    ></textarea>
-                </div>
-            </div>
-            <div className={styles.editBlock}>
-                <div className={styles.header}>Resume</div>
-                <label htmlFor="resume-upload" className={styles.photoLabel}>
-                    <div className={styles.resumeIcon}>
-                        {portfolioData.resumeURL === '' ? "No file selected" : (
-                            <Link style={{ textDecoration: "none" }} href={`${portfolioData.resumeURL}`} target="_blank">previous resume</Link>
-                        )}
+                    <div className={`${styles.inputField} ${styles.platformLinks}`}>
+                        {
+                            filteredPlatforms.map((platform, index) => {
+                                return (
+                                    <div onClick={() => handlePlatformClick(platform)} key={index} className={styles.platform}>
+                                        <div style={{ paddingTop: '3px' }}><FaPlus /></div>
+                                        <div>{platform.name}</div>
+                                    </div>
+                                )
+                            })
+                        }
                     </div>
-                    <div className={styles.labelText}>
-                        <FaEdit /> Resume
-                    </div>
-                    {file ? file?.name : ""}
-                </label>
-                <div
-                    onClick={() => { console.log(file); handleFileUpload() }}
-                    className={styles.updateButton}
-                >Upload</div>
-                <input style={{ display: 'none' }}
-                    onChange={(event) => setFile(event.target.files[0])}
-                    id="resume-upload" type="file"
-                />
-                {
-                    (uploadProgress > 0 && uploadProgress < 100) && (
-                        <div className={styles.uploadStatus}>
-                            <div>{`0%`}</div>
-                            <div><progress value={uploadProgress} max="100" /></div>
-                            <div>{`${Math.round(uploadProgress)}%`}</div>
-                        </div>
-                    )
-                }
-            </div>
-            <div className={styles.editBlock}>
-                <div className={styles.header}>Networking Sites</div>
-                <div className={styles.addedPlatformsSection}>
-                    {
-                        Object.keys(portfolioData.platformLinks).map((key, index) => {
-                            return (
-                                <div key={index} className={styles.addedPlatform}>
-                                    <div>{key}</div>
-                                    <div className={styles.inputLink}>
-                                        <input type="text" placeholder="Enter link" name={`${key}`} value={portfolioData.platformLinks[key]} onChange={(e) => { handleLink(key, e.target.value) }} />
+                </div>
+                <div className={styles.editBlock}>
+                    <div className={styles.header}>Skills</div>
+                    <div className={styles.addedSkillSection}>
+                        {
+                            portfolioData.skills.map((skill, index) => {
+                                return (
+                                    <div key={index} className={styles.addedSkill}>
+                                        <div>{skill?.name}</div>
                                         <div
-                                            onClick={() => handleTrashClick(key)} className={styles.deleteButton}
+                                            onClick={() => handleSkillTrash(skill?.name)}
+                                            className={styles.deleteButton}
                                         >
                                             <MdDeleteOutline />
                                         </div>
                                     </div>
-                                </div>
-                            )
-                        })
-                    }
-                </div>
-                <div className={styles.searchBar}>
-                    <div style={{ fontSize: '24px', paddingTop: '10px' }}><IoSearch /></div>
-                    <input value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} type="text" placeholder="Search for a platform" />
-                </div>
-                <div className={`${styles.inputField} ${styles.platformLinks}`}>
-                    {
-                        filteredPlatforms.map((platform, index) => {
-                            return (
-                                <div onClick={() => handlePlatformClick(platform)} key={index} className={styles.platform}>
-                                    <div style={{ paddingTop: '3px' }}><FaPlus /></div>
-                                    <div>{platform.name}</div>
-                                </div>
-                            )
-                        })
-                    }
+                                )
+                            })
+                        }
+                    </div>
+                    <div className={styles.searchBar}>
+                        <div style={{ fontSize: '24px', paddingTop: '10px' }}><IoSearch /></div>
+                        <input value={skillSearchTerm} onChange={(e) => setSkillSearchTerm(e.target.value)} type="text" placeholder="Search for a skill" />
+                    </div>
+                    <div className={`${styles.inputField} ${styles.skillItems}`}>
+                        {
+                            filteredSkills.map((skill, index) => {
+                                return (
+                                    <div onClick={() => handleSkillClick(skill)} key={index} className={styles.platform}>
+                                        <div style={{ paddingTop: '3px' }}><FaPlus /></div>
+                                        <div>{skill.name}</div>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
                 </div>
             </div>
-            <div className={styles.editBlock}>
-                <div className={styles.header}>Skills</div>
-                <div className={styles.addedSkillSection}>
-                    {
-                        portfolioData.skills.map((skill, index) => {
-                            return (
-                                <div key={index} className={styles.addedSkill}>
-                                    <div>{skill?.name}</div>
-                                    <div
-                                        onClick={() => handleSkillTrash(skill?.name)}
-                                        className={styles.deleteButton}
-                                    >
-                                        <MdDeleteOutline />
-                                    </div>
-                                </div>
-                            )
-                        })
-                    }
-                </div>
-                <div className={styles.searchBar}>
-                    <div style={{ fontSize: '24px', paddingTop: '10px' }}><IoSearch /></div>
-                    <input value={skillSearchTerm} onChange={(e) => setSkillSearchTerm(e.target.value)} type="text" placeholder="Search for a skill" />
-                </div>
-                <div className={`${styles.inputField} ${styles.skillItems}`}>
-                    {
-                        filteredSkills.map((skill, index) => {
-                            return (
-                                <div onClick={() => handleSkillClick(skill)} key={index} className={styles.platform}>
-                                    <div style={{ paddingTop: '3px' }}><FaPlus /></div>
-                                    <div>{skill.name}</div>
-                                </div>
-                            )
-                        })
-                    }
-                </div>
+            <div className={styles.renderView}>
+                <iframe
+                    src={iframeSrc}
+                    width="100%"
+                    height="100%"
+                    style={{
+                        transform: 'scale(0.7)',
+                        transformOrigin: '0 0',
+                        width: '125%',
+                        height: '100%',
+                    }}
+                />
             </div>
         </div>
     );
 }
 
 export async function getServerSideProps() {
-    const portfolioData = {
-        username: "chsyamkumar",
-        workTitle: "web developer",
-        description: "Hi, I'm Syam Kumar. A passionate Front-end Developer based in Hyderabad, India.📍",
-        selfieURL: "https://firebasestorage.googleapis.com/v0/b/educationforjobs-storage.appspot.com/o/selfies%2Fmy_selfie.jpg?alt=media&token=52f4230b-cd99-4652-a5d8-069309148181",
-        resumeURL: "https://firebasestorage.googleapis.com/v0/b/personal-space-700e7.appspot.com/o/resume.pdf?alt=media&token=8f4d908b-4c3c-4134-a55e-d3e625c4d3b6",
-        platformLinks: {
-            LinkedIn: "https://www.linkedin.com/in/chsyamkumar/"
-        },
-        skills: [{ name: 'React JS', type: 'technical' }]
-    }
+    // const portfolioData = {
+    //     username: "chsyamkumar",
+    //     workTitle: "web developer",
+    //     description: "Hi, I'm Syam Kumar. A passionate Front-end Developer based in Hyderabad, India.📍",
+    //     selfieURL: "https://firebasestorage.googleapis.com/v0/b/educationforjobs-storage.appspot.com/o/selfies%2Fmy_selfie.jpg?alt=media&token=52f4230b-cd99-4652-a5d8-069309148181",
+    //     resumeURL: "https://firebasestorage.googleapis.com/v0/b/personal-space-700e7.appspot.com/o/resume.pdf?alt=media&token=8f4d908b-4c3c-4134-a55e-d3e625c4d3b6",
+    //     platformLinks: {
+    //         LinkedIn: "https://www.linkedin.com/in/chsyamkumar/"
+    //     },
+    //     skills: [{ name: 'React JS', type: 'technical' }]
+    // }
 
+    const response = await fetch('https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/portfolio.json');
+    const data = await response.json();
+
+    const key = Object.keys(data).find((objId) => data[objId].username === 'chsyamkumar.in');
+    console.log(key);
     return {
         props: {
-            data: portfolioData
+            objId: key,
+            data: data[key]
         }
     }
 }

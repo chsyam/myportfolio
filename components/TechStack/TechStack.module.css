@@ -1,17 +1,18 @@
 .techStackSection {
     display: flex;
+    justify-content: center;
     align-items: center;
-    gap: 50px;
+    flex-direction: column;
+    gap: 30px;
     user-select: none;
-    margin: 10% 0 20px 20%;
+    margin: 5% 10% 20px 10%;
+    font-family: 'Poppins', sans-serif;
 }
 
 .sectionTitle {
     font-family: 'Mulish', sans-serif;
     font-weight: 700;
-    font-size: 24px;
-    border-right: 3px solid #2D2E6B;
-    padding: 0 20px;
+    font-size: 30px;
     color: #2D2E6B;
     text-wrap: nowrap;
 }
@@ -22,6 +23,30 @@
     align-items: center;
     gap: 20px;
     flex-wrap: wrap;
+}
+
+.skillType {
+    padding: 0 15px 0 0;
+    font-size: 20px;
+    font-weight: 500;
+    border-right: 4px solid #008080;
+}
+
+.skillsTD {
+    padding: 0 0 0 20px;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    gap: 10px;
+}
+
+.skillCell {
+    background-color: #2D2E6B;
+    color: #FFF;
+    padding: 5px 10px;
+    margin: 5px 0;
+    font-size: 20px;
+    border-radius: 10px;
 }
 
 @media (max-width: 800px) {

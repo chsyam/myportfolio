@@ -1,3 +1,18 @@
+.editPageView {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.editPage {
+    width: 50%;
+}
+
+.renderView {
+    width: 50%;
+    height: 100vh;
+}
+
 .editBlock {
     background-color: #FFF;
     border-radius: 5px;
