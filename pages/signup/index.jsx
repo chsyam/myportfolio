@@ -10,10 +10,10 @@ export default function Signup({ usersData }) {
     const [formError, setFormError] = useState("");
     const [formSuccess, setFormSuccess] = useState("");
     const [formData, setFormData] = useState({
-        username: "syam kumar",
-        email: "syamkumar6845@gmail.com",
-        password: "Syam@190543",
-        confirmPassword: "Syam@190543",
+        username: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
     })
 
     const [validationStatus, setValidationStatus] = useState({
