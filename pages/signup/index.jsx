@@ -1,13 +1,19 @@
+"use client";
 import Link from "next/link";
 import styles from "./Signup.module.css";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import signupHandler from "../api/auth/register/route";
 
-export default function Signup() {
+export default function Signup({ usersData }) {
+    const router = useRouter();
+    const [formError, setFormError] = useState("");
+    const [formSuccess, setFormSuccess] = useState("");
     const [formData, setFormData] = useState({
-        username: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
+        username: "syam kumar",
+        email: "syamkumar6845@gmail.com",
+        password: "Syam@190543",
+        confirmPassword: "Syam@190543",
     })
 
     const [validationStatus, setValidationStatus] = useState({
@@ -83,7 +89,6 @@ export default function Signup() {
 
     useEffect(() => {
         const res = handlePasswordValidation();
-        console.log(res, formData.password)
         setValidationStatus({
             ...validationStatus,
             passwordStatus: !res,
@@ -119,7 +124,7 @@ export default function Signup() {
         );
     }
 
-    const handleSignup = (e) => {
+    const handleSignup = async (e) => {
         e.preventDefault();
         if (handleDataValidation()) {
             setValidationStatus({
@@ -131,16 +136,38 @@ export default function Signup() {
             })
             return;
         }
-        console.log(formData)
+        try {
+            try {
+                const response = await signupHandler(formData);
+                console.log(response);
+                if (response === null) {
+                    setFormError("Error registering user. Please try again later");
+                    setFormSuccess("");
+                } else if (response.ok) {
+                    setFormError("");
+                    setFormSuccess("User registered successfully");
+                    setInterval(() => {
+                        setFormSuccess("");
+                        // window.location.replace('/login');
+                    }, 500);
+                }
+            } catch (error) {
+                console.error('Error registering user:', error);
+            }
+        } catch (error) {
+            console.log("error fetching api details", error);
+        }
     }
 
     return (
         <div className={styles.formSection}>
-            <form className={styles.form} onSubmit={(e) => handleSignup(e)}>
+            <form className={styles.form} onSubmit={handleSignup}>
                 <div className={styles.heading}>
                     <div className={styles.title}>Create an account</div>
                     <div className={styles.sectionInfo}>Enter your information to get started</div>
                 </div>
+                <div className={styles.fieldError}>{formError && formError}</div>
+                <div className={styles.fieldSuccess}>{formSuccess && formSuccess}</div>
                 <div className={styles.formElement}>
                     <label htmlFor="username">Full Name</label><br />
                     <input value={formData.username} onChange={(e) => handleInputChange(e)} type="text" name="username" id="username" placeholder="John Doe" />
@@ -176,4 +203,27 @@ export default function Signup() {
             </form>
         </div>
     );
+}
+
+export async function getServerSideProps() {
+    try {
+        const response = await fetch('https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/users.json');
+        let usersData = await response.json();
+        console.log("usersData", usersData);
+        if (usersData === undefined || usersData === null) {
+            usersData = [];
+        }
+        return {
+            props: {
+                usersData: usersData
+            }
+        }
+    } catch (error) {
+        console.log("error fetching api details", error);
+        return {
+            props: {
+                usersData: []
+            }
+        }
+    }
 }
