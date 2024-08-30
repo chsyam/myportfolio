@@ -45,6 +45,19 @@
 .fieldError {
     color: #ff4838;
     margin: 5px 0 20px 0;
+    font-size: 1.1rem;
+    text-align: center;
+    font-weight: 600;
+    white-space: pre-line;
+}
+
+.fieldSuccess {
+    color: #28bf06;
+    margin: 5px 0 20px 0;
+    font-size: 1.1rem;
+    text-align: center;
+    font-weight: 600;
+    white-space: pre-line;
 }
 
 .submitButton {

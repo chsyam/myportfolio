@@ -23,9 +23,11 @@ export default function Signup({ usersData }) {
         confirmPasswordStatus: false,
     })
 
+    const [emailExistsStatus, setEmailExistsStatus] = useState(false);
     const validationErrors = {
         usernameError: "Name must be at least 3 characters long.",
         emailError: "Please enter a valid email address.",
+        emailExistsError: "Email already exists.",
         passwordError: `Password must:
             - Be at least 8 characters long
             - Contain at least one uppercase letter
@@ -80,11 +82,18 @@ export default function Signup({ usersData }) {
     }, [formData.username])
 
     useEffect(() => {
-        const res = handleEmailValidation();
-        setValidationStatus({
-            ...validationStatus,
-            emailStatus: !res,
-        })
+        console.log(formData.email, validationStatus.emailStatus)
+        if (formData.email !== "" && validateEmail(formData.email)) {
+            setValidationStatus({
+                ...validationStatus,
+                emailStatus: true,
+            })
+        } else {
+            setValidationStatus({
+                ...validationStatus,
+                emailStatus: false,
+            })
+        }
     }, [formData.email])
 
     useEffect(() => {
@@ -136,26 +145,29 @@ export default function Signup({ usersData }) {
             })
             return;
         }
+        const emails = Object.keys(usersData).map((user) => usersData[user].email == formData.email);
+        if (emails.length > 0) {
+            setEmailExistsStatus(true);
+            return;
+        } else {
+            setEmailExistsStatus(false);
+        }
         try {
-            try {
-                const response = await signupHandler(formData);
-                console.log(response);
-                if (response === null) {
-                    setFormError("Error registering user. Please try again later");
+            const response = await signupHandler(formData);
+            console.log(response);
+            if (response === null) {
+                setFormError("Error registering user. Please try again later");
+                setFormSuccess("");
+            } else if (response.ok) {
+                setFormError("");
+                setFormSuccess("User registered successfully");
+                setTimeout(() => {
                     setFormSuccess("");
-                } else if (response.ok) {
-                    setFormError("");
-                    setFormSuccess("User registered successfully");
-                    setInterval(() => {
-                        setFormSuccess("");
-                        // window.location.replace('/login');
-                    }, 500);
-                }
-            } catch (error) {
-                console.error('Error registering user:', error);
+                    window.location.replace('/login');
+                }, 500);
             }
         } catch (error) {
-            console.log("error fetching api details", error);
+            console.error('Error registering user:', error);
         }
     }
 
@@ -177,9 +189,14 @@ export default function Signup({ usersData }) {
                 </div>
                 <div className={styles.formElement}>
                     <label htmlFor="email">Email</label><br />
-                    <input value={formData.email} type="email" onChange={(e) => handleInputChange(e)} name="email" id="email" placeholder="john@example.com" />
+                    <input
+                        value={formData.email} type="email"
+                        onChange={(e) => handleInputChange(e)} name="email" id="email" placeholder="john@example.com" />
                     <p className={styles.fieldError}>
                         {validationStatus.emailStatus && validationErrors.emailError}
+                    </p>
+                    <p className={styles.fieldError}>
+                        {emailExistsStatus && validationErrors.emailExistsError}
                     </p>
                 </div>
                 <div className={styles.formElement}>

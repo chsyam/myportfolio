@@ -9,9 +9,9 @@ import { storage } from "./../../components/firebaseConfig/FirebaseConfig";
 import { getDownloadURL, uploadBytesResumable, ref as storageRef } from "firebase/storage";
 import Image from "next/image";
 import Link from "next/link";
+import axios from "axios";
 
 export default function Home({ objId, data }) {
-    console.log("objId, data", objId, data)
     const [searchTerm, setSearchTerm] = useState("");
     const [skillSearchTerm, setSkillSearchTerm] = useState("");
     const [filteredPlatforms, setFilteredPlatforms] = useState([]);
@@ -124,7 +124,7 @@ export default function Home({ objId, data }) {
 
     const handleSubmit = async () => {
         const response = await fetch(`https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/portfolio/${objId}.json`, {
-            method: 'PATCH', // PATCH for updating specific fields
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -139,24 +139,6 @@ export default function Home({ objId, data }) {
         } else {
             alert("something went wrong while updating")
         }
-
-        // try {
-        //     const newDocumentRef = push(dbRef(realtimeDB, 'portfolio/'));
-        //     set(newDocumentRef, portfolioData)
-        //         .then(() => {
-        //             alert("Portfolio published successfully");
-        //             // window.location.reload();
-        //         })
-        //         .catch((error) => {
-        //             alert("Error publishing Portfolio. Please try again later")
-        //             console.error("Error writing document: ", error, "Please try again later");
-        //             // window.location.reload();
-        //         });
-        // } catch (error) {
-        //     console.log(error);
-        //     alert("Error publishing Portfolio. Please try again later")
-        //     // window.location.reload();
-        // }
     }
 
     const handleChange = (name, value) => {
@@ -167,9 +149,7 @@ export default function Home({ objId, data }) {
     }
 
     const handleFileUpload = () => {
-        console.log("got hitted")
         if (!file) return;
-        console.log(file);
         const fileRef = storageRef(storage, `resumes/${file.name}`);
         const uploadTask = uploadBytesResumable(fileRef, file);
         uploadTask.on(
@@ -284,6 +264,7 @@ export default function Home({ objId, data }) {
                             onChange={(e) => handleChange(e.target.name, e.target.value)}
                             type="text"
                             placeholder="Enter your name"
+                            readOnly={true}
                         />
                     </div>
                 </div>
@@ -326,7 +307,7 @@ export default function Home({ objId, data }) {
                         {file ? file?.name : ""}
                     </label>
                     <div
-                        onClick={() => { console.log(file); handleFileUpload() }}
+                        onClick={() => { handleFileUpload() }}
                         className={styles.updateButton}
                     >Upload</div>
                     <input style={{ display: 'none' }}
@@ -448,15 +429,32 @@ export async function getServerSideProps() {
     //     skills: [{ name: 'React JS', type: 'technical' }]
     // }
 
-    const response = await fetch('https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/portfolio.json');
-    const data = await response.json();
-
-    const key = Object.keys(data).find((objId) => data[objId].username === 'chsyamkumar.in');
-    console.log(key);
-    return {
-        props: {
-            objId: key,
-            data: data[key]
+    try {
+        const response = await axios.get('https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/portfolio.json');
+        const data = response.data;
+        const key = Object.keys(data).find((objId) => data[objId].username === 'chsyamkumar.in');
+        if (key === undefined) {
+            return {
+                props: {
+                    objId: [],
+                    data: {}
+                }
+            }
+        }
+        return {
+            props: {
+                objId: key,
+                data: data[key],
+            }
+        }
+    }
+    catch (error) {
+        console.log(error);
+        return {
+            props: {
+                objId: [],
+                data: {}
+            }
         }
     }
 }
