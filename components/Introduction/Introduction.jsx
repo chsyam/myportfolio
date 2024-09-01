@@ -51,14 +51,14 @@ export default function Intoduction({ portfolioData }) {
                     {portfolioData?.description}
                 </div>
                 <div className={styles.platformLinks}>
-                    <div className={styles.resumeButton}>
-                        {
-                            portfolioData?.resumeURL !== "" &&
+                    {
+                        portfolioData?.resumeURL !== "" &&
+                        <div className={styles.resumeButton}>
                             <Link href={`${portfolioData?.resumeURL}`} target="_blank">
                                 Resume
                             </Link>
-                        }
-                    </div>
+                        </div>
+                    }
                     {
                         Object.keys(portfolioData?.platformLinks).length !== 0 && Object.keys(portfolioData?.platformLinks).map((platform, index) => {
                             return (
@@ -76,10 +76,10 @@ export default function Intoduction({ portfolioData }) {
                     }
                 </div>
             </div>
-            <div className={styles.imagePart}
-                style={imageStyles(portfolioData.selfieURL)}
-            >
-            </div>
+            {
+                portfolioData.selfieURL !== "" &&
+                <div className={styles.imagePart} style={imageStyles(portfolioData.selfieURL)} />
+            }
         </div>
     )
 }

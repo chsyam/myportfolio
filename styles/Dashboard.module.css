@@ -1,7 +1,7 @@
 .dashboard {
     margin: 90px 0 0 0;
-    background-color: #F9F9F9;
     padding: 5% 0 0 0;
+    height: calc(100vh - 155px);
 }
 
 @media (max-width: 800px) {
@@ -9,5 +9,6 @@
         margin: 70px 0 0 0;
         width: 100%;
         padding: 40px 0 0 0;
+        height: calc(100vh - 110px);
     }
 }

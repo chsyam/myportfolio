@@ -1,7 +1,6 @@
 import { useState } from "react";
 import styles from "./Login.module.css"
 import Link from "next/link";
-import loginHandler from "../api/auth/login/route";
 
 export default function Login() {
     const [loginError, setLoginError] = useState("");
@@ -20,7 +19,14 @@ export default function Login() {
         e.preventDefault();
         console.log(formData);
         try {
-            const response = await loginHandler(formData);
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+            console.log(response);
             if (response === null) {
                 setLoginSuccess("");
                 setLoginError("Invalid Credentials..!");
@@ -29,7 +35,7 @@ export default function Login() {
                 setLoginError("");
                 setLoginSuccess("Login successfull");
                 setTimeout(() => {
-                    window.location.href = "dashboard/";
+                    // window.location.href = "dashboard/";
                 }, 500);
             } else {
                 setLoginError("Something went wrong while login. Please try again later");

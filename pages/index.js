@@ -3,6 +3,7 @@ import Intoduction from "./../components/Introduction/Introduction";
 import Navbar from "./../components/Navbar/Navbar";
 import TechStack from "./../components/TechStack/TechStack";
 import styles from "./../styles/Dashboard.module.css"
+import Layout from "@/components/Layout/Layout";
 
 export default function Home({ objId, data, response }) {
     const apiHandler = async () => {
@@ -19,7 +20,6 @@ export default function Home({ objId, data, response }) {
 
     return (
         <div className={styles.dashboard}>
-            <Navbar portfolioData={data} />
             <Intoduction portfolioData={data} />
             <TechStack portfolioData={data} />
         </div>

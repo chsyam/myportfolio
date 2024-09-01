@@ -428,7 +428,15 @@ export async function getServerSideProps() {
     //     },
     //     skills: [{ name: 'React JS', type: 'technical' }]
     // }
-
+    const emptyPortfolioData = {
+        username: '',
+        workTitle: '',
+        selfieURL: '',
+        description: '',
+        resumeURL: '',
+        platformLinks: {},
+        skills: [],
+    }
     try {
         const response = await axios.get('https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/portfolio.json');
         const data = response.data;
@@ -436,8 +444,9 @@ export async function getServerSideProps() {
         if (key === undefined) {
             return {
                 props: {
-                    objId: [],
-                    data: {}
+                    objId: '',
+                    data: emptyPortfolioData,
+                    username: ""
                 }
             }
         }
@@ -445,6 +454,7 @@ export async function getServerSideProps() {
             props: {
                 objId: key,
                 data: data[key],
+                username: data[key].username
             }
         }
     }
@@ -452,8 +462,9 @@ export async function getServerSideProps() {
         console.log(error);
         return {
             props: {
-                objId: [],
-                data: {}
+                objId: '',
+                data: emptyPortfolioData,
+                username: ""
             }
         }
     }

@@ -5,15 +5,31 @@
     align-items: center;
     padding: 0 5%;
     font-family: 'Poppins', sans-serif;
-    box-shadow: 1px 1px 8px #979797;
     background-color: #FFFFFF;
 
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
     user-select: none;
+}
+
+.editBanner {
+    text-align: center;
+    padding: 5px 0;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    background: #c0f4d7;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.editBanner span {
+    cursor: pointer;
+}
+
+.editBanner:hover {
+    text-decoration: underline;
+    color: #0015ff;
 }
 
 .navbar__logo {
