@@ -3,7 +3,7 @@ import Link from "next/link";
 import styles from "./Signup.module.css";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import signupHandler from "../api/auth/register/route";
+import signupHandler from "../api/users/route";
 
 export default function Signup({ usersData }) {
     const router = useRouter();
@@ -52,7 +52,6 @@ export default function Signup({ usersData }) {
         if (username !== "" && username.length < 3) return false;
         return true;
     }
-
 
     const handleEmailValidation = () => {
         const email = formData.email.trim();
@@ -152,15 +151,39 @@ export default function Signup({ usersData }) {
         } else {
             setEmailExistsStatus(false);
         }
+
         try {
-            const response = await signupHandler(formData);
-            console.log(response);
+            const response = await fetch('./../api/users/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+            const data = await response.json();
             if (response === null) {
                 setFormError("Error registering user. Please try again later");
                 setFormSuccess("");
             } else if (response.ok) {
                 setFormError("");
                 setFormSuccess("User registered successfully");
+                try {
+                    const googleSheetResponse = await fetch('./../api/users/userToSheets', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            username: formData.username,
+                            email: formData.email,
+                            password: data?.hashedPassword,
+                            userId: data?.userId
+                        })
+                    })
+                    console.log(googleSheetResponse)
+                } catch (error) {
+                    console.log("error appending user details to google sheet", error)
+                }
                 setTimeout(() => {
                     setFormSuccess("");
                     window.location.replace('/login');

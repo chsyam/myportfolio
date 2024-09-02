@@ -17,7 +17,7 @@ export default function Home({ data }) {
 }
 
 export async function getServerSideProps() {
-    
+
     const emptyPortfolioData = {
         username: '',
         workTitle: '',

@@ -3,7 +3,7 @@ import Intoduction from "./../components/Introduction/Introduction";
 import Navbar from "./../components/Navbar/Navbar";
 import TechStack from "./../components/TechStack/TechStack";
 import styles from "./../styles/Dashboard.module.css"
-import Layout from "@/components/Layout/Layout";
+import Layout from "./../components/Layout/layout";
 
 export default function Home({ objId, data, response }) {
     const apiHandler = async () => {

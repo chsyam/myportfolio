@@ -35,7 +35,7 @@ export default function Login() {
                 setLoginError("");
                 setLoginSuccess("Login successfull");
                 setTimeout(() => {
-                    // window.location.href = "dashboard/";
+                    window.location.href = "dashboard/";
                 }, 500);
             } else {
                 setLoginError("Something went wrong while login. Please try again later");
