@@ -1,8 +1,10 @@
 import { useState } from "react";
 import styles from "./Login.module.css"
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 export default function Login() {
+    const router = useRouter();
     const [loginError, setLoginError] = useState("");
     const [loginSuccess, setLoginSuccess] = useState("");
     const [formData, setFormData] = useState({
@@ -34,8 +36,10 @@ export default function Login() {
             else if (response.status === 200) {
                 setLoginError("");
                 setLoginSuccess("Login successfull");
+                const { token } = await response.json()
+                document.cookie = `token=${token}; path=/`
                 setTimeout(() => {
-                    window.location.href = "dashboard/";
+                    router.push('/dashboard')
                 }, 500);
             } else {
                 setLoginError("Something went wrong while login. Please try again later");

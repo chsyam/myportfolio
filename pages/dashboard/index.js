@@ -16,7 +16,18 @@ export default function Home({ data }) {
     );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
+    const { req, res } = context;
+    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1Yjk2NjJhYS0xY2IwLTQxMTgtYmFiOC1kYzE5NmNiY2ZjY2QiLCJpYXQiOjE3MjU0ODA5NzYsImV4cCI6MTcyNTQ4MTAzNn0.JHD69B-BbckN2Qh3WItRkTkZjlWQh3k0fLeX_P9Rwm4' // req.cookies["token"];
+
+    if (!token) {
+        return {
+            redirect: {
+                destination: '/login',
+                permanent: false,
+            },
+        }
+    }
 
     const emptyPortfolioData = {
         username: '',

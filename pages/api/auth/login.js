@@ -1,7 +1,7 @@
 import axios from "axios";
 import bcrypt from "bcryptjs"
 import { encrypt } from "./lib";
-import Cookies from "js-cookie";
+import jwt from 'jsonwebtoken'
 
 export default async function loginHandler(req, res) {
     const { email, password } = { email: req.body['email'], password: req.body['password'] };
@@ -12,16 +12,20 @@ export default async function loginHandler(req, res) {
         if (user) {
             const isAuthenticated = await bcrypt.compare(password, user.password);
             if (isAuthenticated) {
-                console.log("user =>", user);
-                const expires = new Date(Date.now() + 4 * 60 * 60 * 1000);
+                // console.log("user =>", user);
+                const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
                 const session = await encrypt({
                     username: user?.username,
                     email: user?.email,
                     userId: user?.userId,
                     expires: expires
                 });
-                Cookies.set('session', session, { expires: expires });
-                return res.status(200).json({ message: 'Login successful' });
+                const token = jwt.sign({
+                    userId: user?.userId
+                }, process.env.JWT_SECRET, {
+                    expiresIn: '10m',
+                })
+                return res.status(200).json({ token: token, message: 'Login successful' });
             } else {
                 console.log("Invalid Credentials...!");
                 return res.status(401).json({ message: 'Invalid credentials' });

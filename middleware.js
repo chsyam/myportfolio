@@ -1,21 +1,26 @@
 import { NextResponse } from 'next/server';
 
-export function middleware(request) {
-    const response = NextResponse.next();
-
-    const cookies = request.cookies;
-    const session = cookies.get('session');
-    if (session) {
-        const newExpiration = new Date(Date.now() + 4 * 60 * 60 * 1000);
-        response.cookies.set('session', session, {
-            expires: newExpiration,
-            httpOnly: true,
-            sameSite: 'strict',
-        });
-    } else {
+export async function middleware(request) {
+    if (!token) {
         return NextResponse.redirect(new URL('/login', request.url));
     }
-    return response;
+
+    try {
+        const res = await fetch('http://localhost:3000/api/auth/protected', {
+            headers: {
+                Authorization: token,
+            },
+        });
+
+        if (!res.ok) {
+            throw new Error('Token validation failed');
+        }
+
+        return NextResponse.next();
+    } catch (error) {
+        console.error(error);
+        return NextResponse.redirect(new URL('/login', request.url));
+    }
 }
 
 export const config = {
