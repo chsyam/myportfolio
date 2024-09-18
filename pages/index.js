@@ -1,60 +1,33 @@
-import axios from "axios";
-import Intoduction from "./../components/Introduction/Introduction";
-import Navbar from "./../components/Navbar/Navbar";
-import TechStack from "./../components/TechStack/TechStack";
 import styles from "./../styles/Dashboard.module.css"
-import Layout from "./../components/Layout/layout";
+import HomePage from "@/components/homePage/HomePage";
+import { decrypt } from "./api/auth/lib";
 
-export default function Home({ objId, data, response }) {
-    const apiHandler = async () => {
-        try {
-            const response = await axios.get('https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/portfolio.json');
-            console.log(response.data)
-        }
-        catch (error) {
-            console.log(error);
-        }
-    }
-
-    apiHandler();
-
+export default function Home({ login }) {
     return (
         <div className={styles.dashboard}>
-            <Intoduction portfolioData={data} />
-            <TechStack portfolioData={data} />
+            <HomePage />
         </div>
     );
 }
 
-export async function getServerSideProps() {
-    try {
-        const response = await axios.get('https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/portfolio.json');
-        const data = response.data
-
-        const key = Object.keys(data).find((objId) => data[objId].username === 'chsyamkumar.in');
-        console.log(key, data[key]);
-        console.log(key)
-        if (key === undefined) {
-            return {
-                props: {
-                    objId: [],
-                    data: {}
-                }
-            }
-        }
+export async function getServerSideProps(context) {
+    const { req, res } = context;
+    const token = req?.cookies['token']
+    const payload = await decrypt(token)
+    if (!payload || payload === null || payload === undefined) {
+        res.setHeader('Set-Cookie', [
+            'token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT;',
+        ]);
         return {
             props: {
-                objId: key,
-                data: data[key],
+                login: false
             }
         }
-    }
-    catch (error) {
-        console.log(error);
+    } else {
         return {
-            props: {
-                objId: [],
-                data: {}
+            redirect: {
+                destination: '/dashboard',
+                permanent: false
             }
         }
     }

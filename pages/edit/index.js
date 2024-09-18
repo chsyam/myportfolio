@@ -10,8 +10,9 @@ import { getDownloadURL, uploadBytesResumable, ref as storageRef } from "firebas
 import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
+import { decrypt } from "../api/auth/lib";
 
-export default function Home({ objId, data }) {
+export default function Home({ objId, data, userId }) {
     const [searchTerm, setSearchTerm] = useState("");
     const [skillSearchTerm, setSkillSearchTerm] = useState("");
     const [filteredPlatforms, setFilteredPlatforms] = useState([]);
@@ -21,7 +22,7 @@ export default function Home({ objId, data }) {
     const [uploadProgress, setUploadProgress] = useState(0);
     const [selfieProgess, setSelfieProgess] = useState(0);
     const [selfieError, setSelfieError] = useState("");
-    const [iframeSrc, setIframeSrc] = useState("https://myportfolio-henna-six.vercel.app");
+    const [iframeSrc, setIframeSrc] = useState("http://localhost:3000/dashboard");
 
     const platformLinks = [
         { name: "LinkedIn", link: '' },
@@ -30,6 +31,7 @@ export default function Home({ objId, data }) {
         { name: "X", link: '' },
         { name: "Facebook", link: '' }
     ]
+
     const skillsList = [
         { name: "React JS", type: 'technical' },
         { name: "Node.js", type: 'technical' },
@@ -37,8 +39,10 @@ export default function Home({ objId, data }) {
         { name: "MongoDB", type: 'technical' },
         { name: "MySQL", type: 'technical' }
     ]
+
     const [portfolioData, setPortfolioData] = useState({
         username: "",
+        userId: userId,
         workTitle: "",
         description: "",
         resumeURL: "",
@@ -48,12 +52,10 @@ export default function Home({ objId, data }) {
     })
 
     useEffect(() => {
-        setPortfolioData(data);
+        setPortfolioData({
+            ...data, userId: userId
+        });
     }, [data])
-
-    useEffect(() => {
-        console.log(portfolioData)
-    }, [portfolioData])
 
     const handlePlatformClick = (platform) => {
         setPortfolioData({
@@ -171,6 +173,7 @@ export default function Home({ objId, data }) {
             }
         );
     }
+
     const handleSelfieUpload = () => {
         if (!selfie) return;
         if (selfie?.type.includes("image")) {
@@ -208,10 +211,7 @@ export default function Home({ objId, data }) {
                     <div className={styles.header}>
                         <div className={styles.title}>Personal Website</div>
                         <div className={styles.updateButton} onClick={() => handleSubmit()}>
-                            <div>
-                                <MdUpdate style={{ fontSize: '25px', paddingTop: '7px' }} />
-                            </div>
-                            <div>Update</div>
+                            <MdUpdate style={{ fontSize: '25px' }} /> Update
                         </div>
                     </div>
                 </div>
@@ -228,6 +228,7 @@ export default function Home({ objId, data }) {
                                         src={`${portfolioData.selfieURL}`}
                                         style={{ borderRadius: "50%" }}
                                         height="150" width="150"
+                                        priority={true}
                                     />
                                 )
                             }
@@ -264,7 +265,6 @@ export default function Home({ objId, data }) {
                             onChange={(e) => handleChange(e.target.name, e.target.value)}
                             type="text"
                             placeholder="Enter your name"
-                            readOnly={true}
                         />
                     </div>
                 </div>
@@ -333,7 +333,12 @@ export default function Home({ objId, data }) {
                                     <div key={index} className={styles.addedPlatform}>
                                         <div>{key}</div>
                                         <div className={styles.inputLink}>
-                                            <input type="text" placeholder="Enter link" name={`${key}`} value={portfolioData.platformLinks[key]} onChange={(e) => { handleLink(key, e.target.value) }} />
+                                            <input type="text"
+                                                placeholder="Enter link"
+                                                name={`${key}`}
+                                                value={portfolioData.platformLinks[key]}
+                                                onChange={(e) => { handleLink(key, e.target.value) }}
+                                            />
                                             <div
                                                 onClick={() => handleTrashClick(key)} className={styles.deleteButton}
                                             >
@@ -399,7 +404,7 @@ export default function Home({ objId, data }) {
                     </div>
                 </div>
             </div>
-            <div className={styles.renderView}>
+            {/* <div className={styles.renderView}>
                 <iframe
                     src={iframeSrc}
                     width="100%"
@@ -411,25 +416,33 @@ export default function Home({ objId, data }) {
                         height: '100%',
                     }}
                 />
-            </div>
+            </div> */}
         </div>
     );
 }
 
-export async function getServerSideProps() {
-    // const portfolioData = {
-    //     username: "chsyamkumar",
-    //     workTitle: "web developer",
-    //     description: "Hi, I'm Syam Kumar. A passionate Front-end Developer based in Hyderabad, India.📍",
-    //     selfieURL: "https://firebasestorage.googleapis.com/v0/b/educationforjobs-storage.appspot.com/o/selfies%2Fmy_selfie.jpg?alt=media&token=52f4230b-cd99-4652-a5d8-069309148181",
-    //     resumeURL: "https://firebasestorage.googleapis.com/v0/b/personal-space-700e7.appspot.com/o/resume.pdf?alt=media&token=8f4d908b-4c3c-4134-a55e-d3e625c4d3b6",
-    //     platformLinks: {
-    //         LinkedIn: "https://www.linkedin.com/in/chsyamkumar/"
-    //     },
-    //     skills: [{ name: 'React JS', type: 'technical' }]
-    // }
+export async function getServerSideProps(context) {
+    const { req, res } = context;
+    const token = req?.cookies['token']
+    const payload = await decrypt(token)
+    // console.log(payload)
+
+    if (!payload || payload === null || payload === undefined) {
+        res.setHeader('Set-Cookie', [
+            'token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT;',
+        ]);
+
+        return {
+            redirect: {
+                destination: '/login',
+                permanent: false
+            }
+        }
+    }
+
     const emptyPortfolioData = {
         username: '',
+        userId: '',
         workTitle: '',
         selfieURL: '',
         description: '',
@@ -440,13 +453,13 @@ export async function getServerSideProps() {
     try {
         const response = await axios.get('https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/portfolio.json');
         const data = response.data;
-        const key = Object.keys(data).find((objId) => data[objId].username === 'chsyamkumar.in');
+        const key = Object.keys(data).find((objId) => data[objId].userId === payload.userId);
         if (key === undefined) {
             return {
                 props: {
                     objId: '',
                     data: emptyPortfolioData,
-                    username: ""
+                    userId: payload.userId,
                 }
             }
         }
@@ -454,7 +467,7 @@ export async function getServerSideProps() {
             props: {
                 objId: key,
                 data: data[key],
-                username: data[key].username
+                userId: payload.userId
             }
         }
     }
@@ -464,7 +477,7 @@ export async function getServerSideProps() {
             props: {
                 objId: '',
                 data: emptyPortfolioData,
-                username: ""
+                userId: payload.userId
             }
         }
     }

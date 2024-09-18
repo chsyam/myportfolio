@@ -12,7 +12,7 @@ export default async function loginHandler(req, res) {
         if (user) {
             const isAuthenticated = await bcrypt.compare(password, user.password);
             if (isAuthenticated) {
-                // console.log("user =>", user);
+                console.log("user =>", user);
                 const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
                 const session = await encrypt({
                     username: user?.username,
@@ -21,10 +21,13 @@ export default async function loginHandler(req, res) {
                     expires: expires
                 });
                 const token = jwt.sign({
-                    userId: user?.userId
+                    userId: user?.userId,
+                    username: user?.username,
+                    email: user?.email,
                 }, process.env.JWT_SECRET, {
-                    expiresIn: '10m',
+                    expiresIn: '1440m',
                 })
+                console.log(token)
                 return res.status(200).json({ token: token, message: 'Login successful' });
             } else {
                 console.log("Invalid Credentials...!");

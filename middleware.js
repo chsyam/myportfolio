@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 
 export async function middleware(request) {
+    const token = request?.cookies['_parsed']?.get('token')?.value;
+
     if (!token) {
         return NextResponse.redirect(new URL('/login', request.url));
     }
@@ -11,6 +13,7 @@ export async function middleware(request) {
                 Authorization: token,
             },
         });
+        console.log(res.status);
 
         if (!res.ok) {
             throw new Error('Token validation failed');

@@ -2,7 +2,7 @@ import { jwtVerify, SignJWT } from "jose";
 import Cookies from "js-cookie";
 import { NextResponse } from "next/server";
 
-const secretKey = 'chsyamkumar.in'
+const secretKey = process.env.JWT_SECRET
 const key = new TextEncoder().encode(secretKey);
 
 export async function encrypt(payload) {
@@ -13,14 +13,19 @@ export async function encrypt(payload) {
         .sign(key);
 }
 
-export async function decrypt(input) {
+export async function decrypt(input, context) {
     if (!input) {
-        window.location.href = "/login";
+        return null;
     }
-    const { payload } = await jwtVerify(input, key, {
-        algorithms: ["HS256"],
-    });
-    return payload;
+    try {
+        const { payload } = await jwtVerify(input, key, {
+            algorithms: ["HS256"],
+        });
+        return payload;
+    } catch (e) {
+        console.log("Something went wrong while fetching Payload", e);
+        return null;
+    }
 }
 
 export async function getSession() {

@@ -6,7 +6,7 @@
     padding: 0 5%;
     font-family: 'Poppins', sans-serif;
     background-color: #FFFFFF;
-
+    box-shadow: 1px 8px 8px solid rgb(48, 48, 48);
     user-select: none;
 }
 

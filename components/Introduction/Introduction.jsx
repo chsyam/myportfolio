@@ -25,8 +25,8 @@ export default function Intoduction({ portfolioData }) {
 
     const imageStyles = (imageURL) => {
         return {
-            width: "300px",
-            height: "300px",
+            width: "400px",
+            height: "400px",
             borderRadius: '60 % 40 % 30 % 70 % / 60% 30% 70% 40%',
             backgroundImage: 'linear-gradient(45deg, #08aeea, #2af598, 100%)',
             border: '3px solid #000',
@@ -41,14 +41,17 @@ export default function Intoduction({ portfolioData }) {
     return (
         <div className={`${styles.introduction}`}>
             <div className={styles.summaryPart}>
-                <div className={`${styles.workTitle}`}>
-                    {portfolioData?.workTitle}
-                </div>
+                {
+                    portfolioData?.workTitle ? (
+                        <div className={styles.workTitle}>
+                            <div className={styles.titleText}>
+                                {portfolioData?.workTitle}
+                            </div>
+                        </div>
+                    ) : ""
+                }
                 <div className={styles.summary}>
-                    {/* Hi
-                    <Image style={{ margin: '0 10px 0 5px' }} src={WavingHand} alt="Waving Hand" width={25} height={25} />
-                    I'm Syam Kumar. A passionate Front-end Developer based in Hyderabad, India.📍 */}
-                    {portfolioData?.description}
+                    {portfolioData?.description ? portfolioData?.description + " 📍" : ""}
                 </div>
                 <div className={styles.platformLinks}>
                     {
@@ -60,7 +63,7 @@ export default function Intoduction({ portfolioData }) {
                         </div>
                     }
                     {
-                        Object.keys(portfolioData?.platformLinks).length !== 0 && Object.keys(portfolioData?.platformLinks).map((platform, index) => {
+                        portfolioData?.platformLinks && Object.keys(portfolioData?.platformLinks)?.length !== 0 && Object.keys(portfolioData?.platformLinks)?.map((platform, index) => {
                             return (
                                 <div
                                     key={index}
@@ -80,6 +83,6 @@ export default function Intoduction({ portfolioData }) {
                 portfolioData.selfieURL !== "" &&
                 <div className={styles.imagePart} style={imageStyles(portfolioData.selfieURL)} />
             }
-        </div>
+        </div >
     )
 }
