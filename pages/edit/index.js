@@ -425,7 +425,6 @@ export async function getServerSideProps(context) {
     const { req, res } = context;
     const token = req?.cookies['token']
     const payload = await decrypt(token)
-    // console.log(payload)
 
     if (!payload || payload === null || payload === undefined) {
         res.setHeader('Set-Cookie', [

@@ -6,6 +6,6 @@
 
 .description { font-size: 20px; margin: 10px 0 20px 0; }
 
-.inputElement { display: flex; align-items: center; gap: 5px; margin: 20px 0; border-radius: 5px; border: 2px solid #dadada; background-color: #f3f4f6; padding: 0 0 0 15px; }
+.inputElement { display: flex; align-items: center; margin: 20px 0; border-radius: 5px; border: 2px solid #dadada; background-color: #f3f4f6; padding: 0 0 0 15px; }
 
-.inputElement input { width: 98%; outline: none; padding: 10px 10px; font-size: 18px; resize: none; background-color: #f3f4f6; margin: 0 0 0 10px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; }
+.inputElement input { width: 98%; outline: none; padding: 10px 10px; font-size: 18px; resize: none; background-color: #f3f4f6; border-top-right-radius: 5px; border-bottom-right-radius: 5px; }

@@ -4,12 +4,38 @@ import styles from "./../../styles/WebAddress.module.css";
 import { decrypt } from "../api/auth/lib";
 import axios from "axios";
 
-export default function DomainChange({ username, userId }) {
-    const [domain, setDomain] = useState("https://myportfolio.com/");
+const domainURL = process.env.DOMAIN_URL
+
+export default function DomainChange({ username, userId, data, objId, allRecords }) {
+    const [domain, setDomain] = useState('http://localhost:3000/');
     const [webAddress, setWebAddress] = useState("");
-    const [showInput, setShowInput] = useState(false);
     const [changeInputToggle, setChangeInputToggle] = useState(true);
-    const [domainNameErrors, setDomainNameErrors] = useState({});
+    const [allDomainNames, setAllDomainNames] = useState([])
+
+    useEffect(() => {
+        let temp = [];
+        if (data) {
+            Object.keys(allRecords).map((key) => {
+                allRecords[key].webAddress !== data.webAddress
+                    && temp.push(allRecords[key].webAddress)
+            })
+            setAllDomainNames(temp);
+        } else {
+            Object.keys(allRecords).map((key) => {
+                setAllDomainNames(prev => [...prev, allRecords[key].webAddress])
+            })
+        }
+    }, [allRecords])
+
+    useEffect(() => {
+        let address = "";
+        try {
+            address = data.webAddress ? data.webAddress : ""
+        } catch (error) {
+            console.log(error);
+        }
+        setWebAddress(address);
+    }, [data]);
 
     const handleAddressChange = (value) => {
         let modifiedValue = value.replace(/[^a-zA-Z]/g, '-')
@@ -17,38 +43,48 @@ export default function DomainChange({ username, userId }) {
         setWebAddress(modifiedValue);
     };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (webAddress[0] === '-' || webAddress[webAddress.length - 1] === '-' || webAddress.length <= 2) {
+            console.log("invlaid domain name")
+            return;
+        }
 
-    const handleSubmit = async () => {
         const formData = {
-            username: username,
             userId: userId,
+            username: username,
             webAddress: webAddress
         }
 
-        const response = await fetch(`https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/domain-names`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                username: username,
-                userId: userId,
-                webAddress: webAddress
-            }),
-        });
-
-        const result = await response.json();
-        console.log('Update successful:', result);
-        if (result) {
-            console.log("handleReloadIframe")
-        } else {
-            alert("something went wrong while updating")
+        try {
+            if (objId) {
+                const response = await fetch(`https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/endUserWebAddress/${objId}.json`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                });
+                console.log(response);
+            } else {
+                const response = await fetch(`https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/endUserWebAddress.json`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                });
+                console.log(response);
+            }
+        } catch (error) {
+            console.log(error);
         }
+        setChangeInputToggle(!changeInputToggle);
     }
 
     return (
         <div className={styles.webAddressContainer}>
-            <div>
+            <form onSubmit={(e) => handleSubmit(e)}>
                 <div>
                     <div className={styles.heading}>Current web address</div>
                     <div className={styles.description}>
@@ -58,7 +94,7 @@ export default function DomainChange({ username, userId }) {
                 {
                     !changeInputToggle ? (
                         <div className={styles.inputElement}>
-                            <div>
+                            <div className="text-gray-500 mx-2 font-semibold">
                                 {domain}
                             </div>
                             <input
@@ -76,7 +112,12 @@ export default function DomainChange({ username, userId }) {
                             <div className="cursor-pointer" onClick={() => window.open(domain + webAddress, "_blank")}>
                                 <FaLink className="text-2xl" />
                             </div>
-                            <input type="text" value={domain + webAddress} placeholder=""
+                            <div className="text-gray-400 ml-3">
+                                {domain}
+                            </div>
+                            <input type="text"
+                                className=" font-semibold"
+                                value={webAddress}
                                 readOnly={true}
                             />
                         </div>
@@ -84,39 +125,39 @@ export default function DomainChange({ username, userId }) {
                 }
                 <div className="text-red-600 text-md mb-[20px]">
                     {
-                        webAddress.length === 0 ? "- website address should not be empty" : webAddress.length !== 0 && webAddress.length <= 2 && "- website address must have 3 characters long"
+                        webAddress?.length === 0 ? (
+                            <div>- website address should not be empty</div>
+                        ) : (
+                            webAddress?.length !== 0 && webAddress?.length <= 2 &&
+                            <div>{"- website address must have 3 characters long"}</div>
+                        )
                     }
                     {
-                        Object.keys(domainNameErrors).map((error, index) => {
-                            return (
-                                <div key={index}>- {domainNameErrors[error]}</div>
-                            )
-                        })
+                        webAddress.length !== 0 && webAddress[0] === "-" &&
+                        <div>{"- website address should not start with \'-\'"}</div>
+                    }
+                    {
+                        webAddress.length !== 0 && webAddress[webAddress.length - 1] === "-" &&
+                        <div>{"- website address should not end with \'-\'"}</div>
                     }
                 </div>
                 <div>
-                    <div
-                        onClick={() => !changeInputToggle ?
-                            webAddress.length > 2 && setChangeInputToggle(!changeInputToggle)
-                            :
-                            setChangeInputToggle(!changeInputToggle)
-                        }
-                    >
-                        {
-                            !changeInputToggle ?
-                                <div
-                                    className={styles.labelText}
-                                    onClick={() => {
-                                        webAddress.length > 2 &&
-                                            handleSubmit()
-                                    }}
-                                ><FaSave />{"save"}</div>
-                                :
-                                <div className={styles.labelText}><FaEdit />{"Change address"}</div>
-                        }
-                    </div>
+                    {
+                        !changeInputToggle ? (
+                            <button type="submit"
+                                className={styles.labelText}
+                            >
+                                <FaSave />{"save"}
+                            </button>
+                        ) : (
+                            <div onClick={() => setChangeInputToggle(!changeInputToggle)}
+                                className={styles.labelText}><FaEdit />
+                                {"Change address"}
+                            </div>
+                        )
+                    }
                 </div>
-            </div>
+            </form>
         </div>
     );
 }
@@ -139,19 +180,50 @@ export async function getServerSideProps(context) {
         }
     }
 
+    const emptyData = {
+        username: '',
+        userId: '',
+        data: {},
+        objId: ''
+    }
+
     try {
         if (!payload.username || !payload.userId) {
             return {
                 props: {
                     username: '',
-                    userId: ''
+                    userId: '',
+                    data: {},
+                    objId: '',
+                    allRecords: {}
                 }
             }
         }
+
+        const response = await axios.get('https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/endUserWebAddress.json');
+        let data = response.data
+        if (data === null)
+            data = {};
+        const objId = Object.keys(data).find((objId) => data[objId].userId === payload.userId);
+        if (objId === undefined || data === null) {
+            return {
+                props: {
+                    objId: '',
+                    data: emptyData,
+                    username: payload.username,
+                    userId: payload.userId,
+                    allRecords: data
+                }
+            }
+        }
+
         return {
             props: {
+                objId: objId,
+                data: data[objId],
                 username: payload.username,
-                userId: payload.userId
+                userId: payload.userId,
+                allRecords: data
             }
         }
     }
@@ -159,8 +231,11 @@ export async function getServerSideProps(context) {
         console.log(error);
         return {
             props: {
+                objId: '',
+                data: emptyData,
                 username: payload.username,
-                userId: payload.userId
+                userId: payload.userId,
+                allRecords: {}
             }
         }
     }
