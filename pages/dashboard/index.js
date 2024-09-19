@@ -52,8 +52,8 @@ export async function getServerSideProps(context) {
             return {
                 props: {
                     data: emptyPortfolioData,
-                    username: '',
-                    userId: ''
+                    username: payload.username,
+                    userId: payload.userId
                 }
             }
         }
@@ -70,8 +70,8 @@ export async function getServerSideProps(context) {
         return {
             props: {
                 data: emptyPortfolioData,
-                username: '',
-                userId: ''
+                username: payload.username,
+                    userId: payload.userId
             }
         }
     }

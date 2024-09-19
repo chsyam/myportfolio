@@ -134,23 +134,24 @@ export default function Signup({ usersData }) {
 
     const handleSignup = async (e) => {
         e.preventDefault();
-        if (handleDataValidation()) {
-            setValidationStatus({
-                ...validationStatus,
-                usernameStatus: (formData.username === "" || !handleUsernameValidation()) ? true : false,
-                emailStatus: (formData.email === "" || !handleEmailValidation()) ? true : false,
-                passwordStatus: (formData.password === "" || !handlePasswordValidation()) ? true : false,
-                confirmPasswordStatus: (formData.confirmPassword === "" || !handleConfirmPasswordValidation()) ? true : false,
-            })
-            return;
-        }
-        const emails = Object.keys(usersData).map((user) => usersData[user].email == formData.email);
-        if (emails.length > 0) {
-            setEmailExistsStatus(true);
-            return;
-        } else {
-            setEmailExistsStatus(false);
-        }
+        // if (handleDataValidation()) {
+        //     setValidationStatus({
+        //         ...validationStatus,
+        //         usernameStatus: (formData.username === "" || !handleUsernameValidation()) ? true : false,
+        //         emailStatus: (formData.email === "" || !handleEmailValidation()) ? true : false,
+        //         passwordStatus: (formData.password === "" || !handlePasswordValidation()) ? true : false,
+        //         confirmPasswordStatus: (formData.confirmPassword === "" || !handleConfirmPasswordValidation()) ? true : false,
+        //     })
+        //     return;
+        // }
+        // console.log(formData);
+        // const emails = Object.keys(usersData).map((user) => usersData[user].email === formData.email);
+        // if (emails.length > 0) {
+        //     setEmailExistsStatus(true);
+        //     return;
+        // } else {
+        //     setEmailExistsStatus(false);
+        // }
 
         try {
             const response = await fetch('./../api/users/signup', {
@@ -180,6 +181,7 @@ export default function Signup({ usersData }) {
                             userId: data?.userId
                         })
                     })
+
                     console.log(googleSheetResponse)
                 } catch (error) {
                     console.log("error appending user details to google sheet", error)

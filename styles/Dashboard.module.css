@@ -1,14 +1,5 @@
-.dashboard {
-    margin: 30px 0 0 0;
-    padding: 30px 0 0 0;
-    height: calc(100vh - 155px);
-}
+.dashboard { margin: 30px 0 0 0; padding: 30px 0 0 0; height: calc(100vh - 155px); }
 
 @media (max-width: 800px) {
-    .dashboard {
-        margin: 70px 0 0 0;
-        width: 100%;
-        padding: 40px 0 0 0;
-        height: calc(100vh - 110px);
-    }
+  .dashboard { margin: 70px 0 0 0; width: 100%; padding: 40px 0 0 0; height: calc(100vh - 110px); }
 }
