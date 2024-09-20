@@ -8,7 +8,7 @@ export async function middleware(request) {
     }
 
     try {
-        const res = await fetch('http://localhost:3000/api/auth/protected', {
+        const res = await fetch('https://myportfolio-henna-six.vercel.app/api/auth/protected', {
             headers: {
                 Authorization: token,
             },

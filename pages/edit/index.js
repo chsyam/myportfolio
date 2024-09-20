@@ -22,7 +22,7 @@ export default function Home({ objId, data, userId }) {
     const [uploadProgress, setUploadProgress] = useState(0);
     const [selfieProgess, setSelfieProgess] = useState(0);
     const [selfieError, setSelfieError] = useState("");
-    const [iframeSrc, setIframeSrc] = useState("http://localhost:3000/dashboard");
+    const [iframeSrc, setIframeSrc] = useState("https://myportfolio-henna-six.vercel.app/dashboard");
 
     const platformLinks = [
         { name: "LinkedIn", link: '' },

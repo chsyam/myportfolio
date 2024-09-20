@@ -7,7 +7,7 @@ import axios from "axios";
 const domainURL = process.env.DOMAIN_URL
 
 export default function DomainChange({ username, userId, data, objId, allRecords }) {
-    const [domain, setDomain] = useState('http://localhost:3000/');
+    const [domain, setDomain] = useState('https://myportfolio-henna-six.vercel.app/');
     const [webAddress, setWebAddress] = useState("");
     const [changeInputToggle, setChangeInputToggle] = useState(true);
     const [allDomainNames, setAllDomainNames] = useState([])
