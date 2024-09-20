@@ -53,6 +53,7 @@ export async function getServerSideProps(context) {
                 }
             }
         }
+        let userDomainObject = {}
         const allObjects = Object.keys(data)
         if (allObjects.length === 0) {
             return {
@@ -62,9 +63,28 @@ export async function getServerSideProps(context) {
                     username: '',
                 }
             }
+        } else {
+            for (let i = 0; i < allObjects.length; i++) {
+                console.log(data[allObjects[i]].webAddress, domainName)
+                if (data[allObjects[i]].webAddress === domainName) {
+                    userDomainObject = data[allObjects[i]]
+                    break;
+                }
+            }
         }
-        userId = data[allObjects[0]]['userId']
-        console.log(userId)
+
+        console.log("userDomainObject", userDomainObject)
+        if (userDomainObject) {
+            userId = userDomainObject['userId']
+        } else {
+            return {
+                props: {
+                    data: emptyPortfolioData,
+                    domainName: domainName,
+                    username: '',
+                }
+            }
+        }
     }
     catch (error) {
         console.log(error)

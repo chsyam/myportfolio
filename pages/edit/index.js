@@ -123,15 +123,26 @@ export default function Home({ objId, data, userId }) {
             setIframeSrc("https://myportfolio-henna-six.vercel.app/");
         }, 0);
     }
-
+    console.log("objectId", objId);
+    let response;
     const handleSubmit = async () => {
-        const response = await fetch(`https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/portfolio/${objId}.json`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(portfolioData),
-        });
+        if (objId) {
+            response = await fetch(`https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/portfolio/${objId}.json`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(portfolioData),
+            });
+        } else {
+            response = await fetch(`https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/portfolio.json`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(portfolioData),
+            });
+        }
 
         const result = await response.json();
         console.log('Update successful:', result);
