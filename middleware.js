@@ -1,9 +1,7 @@
 import { NextResponse } from 'next/server';
 
 export async function middleware(request) {
-    console.log("request", request);
-    console.log("request['cookies']", request['cookies']);
-    console.log("request.cookies", request.cookies["token"]);
+    console.log('middleware', request?.cookies['token']);
     const token = request.cookies["token"];
 
     if (!token) {
