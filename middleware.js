@@ -1,7 +1,7 @@
 // import CryptoJS from 'crypto-js';
-// import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
-// export async function middleware(request) {
+export async function middleware(request) {
 //     const req_cookies = request.cookies.get('token');
 //     if (req_cookies == undefined) {
 //         return NextResponse.redirect(new URL('/login', request.url));
@@ -9,10 +9,10 @@
 //     const token = req_cookies['value'];
 //     console.log("token =>", token);
 
-//     if (!token) {
-//         console.log("token not found");
-//         return NextResponse.redirect(new URL('/login', request.url));
-//     }
+    if (true) {
+        console.log("token not found");
+        return NextResponse.redirect(new URL('/login', request.url));
+    }
 
 //     try {
 //         const hash = CryptoJS.SHA256(process.env.JWT_SECRET).toString();
@@ -36,8 +36,8 @@
 //         console.error(error);
 //         return NextResponse.redirect(new URL('/login', request.url));
 //     }
-// }
+}
 
-// export const config = {
-//     matcher: ['/edit/:path*', '/dashboard/:path*'],
-// };
+export const config = {
+    matcher: ['/edit/:path*', '/dashboard/:path*'],
+};
