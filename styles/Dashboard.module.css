@@ -1,5 +1,24 @@
-.dashboard { margin: 30px 0 0 0; padding: 30px 0 0 0; height: calc(100vh - 155px); }
+.dashboard {
+	padding: 2%;
+}
 
-@media (max-width: 800px) {
-  .dashboard { margin: 70px 0 0 0; width: 100%; padding: 40px 0 0 0; height: calc(100vh - 110px); }
+.inputField {
+	margin: 20px 0;
+}
+
+.inputField label {
+	font-weight: 500;
+	font-size: 1.25rem;
+}
+
+.inputField input,
+.inputField textarea {
+	width: 100%;
+	border-radius: 5px;
+	outline: none;
+	border: 1px solid #dadada;
+	padding: 10px 20px;
+	margin: 5px 0 0 0;
+	resize: none;
+	font-size: 18px;
 }

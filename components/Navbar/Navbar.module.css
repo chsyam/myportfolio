@@ -1,5 +1,5 @@
 .navbar {
-    height: 90px;
+    height: 80px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -30,14 +30,6 @@
 .editBanner:hover {
     text-decoration: underline;
     color: #0015ff;
-}
-
-.navbar__logo {
-    font-size: 24px;
-    font-weight: 700;
-    cursor: pointer;
-    padding: 0 10px;
-    transition: 0.3s all ease-in-out;
 }
 
 @media (max-width: 800px) {

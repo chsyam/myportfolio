@@ -7,7 +7,6 @@ import styles from "./../../styles/Dashboard.module.css"
 export default function EndUserView({ data }) {
     const router = useRouter();
     const { domainName } = router.query;
-    console.log("end-user domain address =>", domainName)
 
     return (
         <div className={styles.dashboard}>
@@ -65,7 +64,7 @@ export async function getServerSideProps(context) {
             }
         } else {
             for (let i = 0; i < allObjects.length; i++) {
-                console.log(data[allObjects[i]].webAddress, domainName)
+                // console.log(data[allObjects[i]].webAddress, domainName)
                 if (data[allObjects[i]].webAddress === domainName) {
                     userDomainObject = data[allObjects[i]]
                     break;
@@ -73,7 +72,6 @@ export async function getServerSideProps(context) {
             }
         }
 
-        console.log("userDomainObject", userDomainObject)
         if (userDomainObject) {
             userId = userDomainObject['userId']
         } else {
@@ -112,7 +110,7 @@ export async function getServerSideProps(context) {
                 }
             }
         }
-        console.log(objId, data[objId])
+        // console.log(objId, data[objId])
         return {
             props: {
                 data: data[objId],

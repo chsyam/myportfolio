@@ -123,7 +123,7 @@ export default function Home({ objId, data, userId }) {
             setIframeSrc("https://myportfolio-henna-six.vercel.app/");
         }, 0);
     }
-    console.log("objectId", objId);
+    // console.log("objectId", objId);
     let response;
     const handleSubmit = async () => {
         if (objId) {

@@ -1,8 +1,7 @@
-import { Button } from "@mui/material";
+import { Button } from "@mui/material/Button";
 import styles from "./Navbar.module.css"
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { LogIn, LogOut } from "lucide-react";
 
 export default function Navbar({ username }) {
     const router = useRouter();
@@ -21,6 +20,18 @@ export default function Navbar({ username }) {
 
     return (
         <div>
+            {/* {
+                username && showEditBanner && domainName === undefined &&
+                <div
+                    className={styles.editBanner}
+                    onClick={() => window.location.href = "/edit"}
+                >
+                    <span>
+                        You can edit the template here
+                    </span>
+                    <FaExternalLinkAlt />
+                </div>
+            } */}
             <div className={styles.navbar}>
                 <div
                     className="text-2xl font-semibold cursor-pointer"
@@ -32,21 +43,22 @@ export default function Navbar({ username }) {
                     domainName === undefined && (
                         username ? (
                             <div className="flex justify-center align-middle gap-5">
-                                <Button variant="outlined" size="medium" color="error"
-                                    startIcon={<LogOut />}
-                                    onClick={() => logoutHandler()}
-                                >Logout</Button>
+                                {/* <div onClick={() => router.push("/domain")} className="cursor-pointer text-xl">
+                                    <BsGlobe2 />
+                                </div> */}
+                                <Button onClick={() => logoutHandler()}>
+                                    Logout
+                                </Button>
                             </div>
                         ) : (
                             <div className="flex justify-center align-middle gap-5 font-semibold text-xl">
                                 <Button variant="outlined" size="medium"
-                                    startIcon={<LogIn />}
-                                    onClick={() => router.push("/login")}
+                                // onClick={() => router.push("/login")}
                                 >
                                     Login
                                 </Button>
                                 <Button variant="contained" size="medium"
-                                    onClick={() => router.push("/signup")}
+                                // onClick={() => router.push("/signup")}
                                 >
                                     Signup
                                 </Button>

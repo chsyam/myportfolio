@@ -251,7 +251,7 @@ export async function getServerSideProps() {
     try {
         const response = await fetch('https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/users.json');
         let usersData = await response.json();
-        console.log("usersData", usersData);
+        // console.log("usersData", usersData);
         if (usersData === undefined || usersData === null) {
             usersData = [];
         }
