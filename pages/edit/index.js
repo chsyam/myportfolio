@@ -415,19 +415,6 @@ export default function Home({ objId, data, userId }) {
                     </div>
                 </div>
             </div>
-            {/* <div className={styles.renderView}>
-                <iframe
-                    src={iframeSrc}
-                    width="100%"
-                    height="100%"
-                    style={{
-                        transform: 'scale(0.7)',
-                        transformOrigin: '0 0',
-                        width: '125%',
-                        height: '100%',
-                    }}
-                />
-            </div> */}
         </div>
     );
 }

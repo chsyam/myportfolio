@@ -4,8 +4,6 @@ import styles from "./../../styles/WebAddress.module.css";
 import { decrypt } from "../api/auth/lib";
 import axios from "axios";
 
-const domainURL = process.env.DOMAIN_URL
-
 export default function DomainChange({ username, userId, data, objId, allRecords }) {
     const [domain, setDomain] = useState('https://myportfolio-henna-six.vercel.app/');
     const [webAddress, setWebAddress] = useState("");
@@ -87,7 +85,7 @@ export default function DomainChange({ username, userId, data, objId, allRecords
             <form onSubmit={(e) => handleSubmit(e)}>
                 <div>
                     <div className={styles.heading}>Current web address</div>
-                    <div className={styles.description}>
+                    <div className="text-sm">
                         Your website is available via the following address. Go ahead, try it out in your browser 🏄‍♂️
                     </div>
                 </div>

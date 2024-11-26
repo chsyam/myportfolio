@@ -1,22 +1,71 @@
+import styles from "./../../styles/Dashboard.module.css";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import styles from "./../../styles/Dashboard.module.css"
 import { decrypt } from "../api/auth/lib";
-import React, { useState } from "react";
 import { Box, Tab, Tabs } from "@mui/material";
+import { Save } from "lucide-react";
+import ProfileDetailsForm from "@/components/ProfileDetailsForm";
 
-export default function Home({ data }) {
+export default function Home({ objId, data, userId }) {
     const [value, setValue] = useState(0);
-
-    const handleChange = (event, newValue) => {
+    const [portfolioData, setPortfolioData] = useState({
+        username: "",
+        userId: userId,
+        workTitle: "",
+        description: "",
+        resumeURL: "",
+        selfieURL: "",
+        platformLinks: {},
+        skills: []
+    })
+    const handleTabChange = (event, newValue) => {
         setValue(newValue);
     };
+
+    useEffect(() => {
+        setPortfolioData({
+            ...data, userId: userId
+        });
+    }, [data])
+
+    const handleSubmit = async () => {
+        let response;
+        if (objId) {
+            response = await fetch(`https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/portfolio/${objId}.json`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(portfolioData),
+            });
+        } else {
+            response = await fetch(`https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/portfolio.json`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(portfolioData),
+            });
+        }
+
+        const result = await response.json();
+        console.log('Update successful:', result);
+        if (result) {
+            console.log("saved to database. successfully...!")
+            alert("saved to database. successfully...!")
+            window.location.reload();
+        } else {
+            alert("something went wrong while updating");
+            window.location.reload();
+        }
+    }
 
     return (
         <div className={styles.dashboard}>
             <Box sx={{ border: 1, borderColor: 'divider', width: '100%' }}>
                 <Tabs
                     value={value}
-                    onChange={handleChange}
+                    onChange={handleTabChange}
                     variant="scrollable"
                     scrollButtons="auto"
                     aria-label="scrollable auto tabs example"
@@ -27,35 +76,25 @@ export default function Home({ data }) {
                     <Tab sx={{ bgcolor: '#FFF' }} label="Domain" />
                 </Tabs>
             </Box>
-            <div className="flex w-[100%] border">
-                <div className="grow p-6">
-                    <form>
-                        <div className={styles.inputField}>
-                            <label>Full Name</label><br />
-                            <input name="fullName" placeholder="enter nice looking name" />
-                        </div>
-                        <div className={styles.inputField}>
-                            <label>Job Title</label>
-                            <input
-                                type="text"
-                                name="workTitle"
-                                placeholder="enter Fancy work title"
-                            />
-                        </div>
-                        <div className={styles.inputField}>
-                            <label>Bio</label>
-                            <textarea
-                                name="description"
-                                style={{ minHeight: '150px' }}
-                                type="text"
-                                placeholder="enter your bio briefly"
-                            ></textarea>
-                        </div>
-                    </form>
-                </div>
-                <div className="grow p-6">
-                </div>
-            </div>
+            {
+                value === 0 && (
+                    <ProfileDetailsForm portfolioData={portfolioData} setPortfolioData={setPortfolioData} handleSubmit={handleSubmit} />
+                )
+            }
+            {
+                value === 1 && (
+                    <div className="p-6 text-2xl font-semibold">
+                        Templates
+                    </div>
+                )
+            }
+            {
+                value === 2 && (
+                    <div className="p-6 text-2xl font-semibold">
+                        Domain
+                    </div>
+                )
+            }
         </div>
     );
 }
@@ -64,6 +103,7 @@ export async function getServerSideProps(context) {
     const { req, res } = context;
     const token = req?.cookies['token']
     const payload = await decrypt(token)
+
     if (!payload || payload === null || payload === undefined) {
         res.setHeader('Set-Cookie', [
             'token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT;',
@@ -87,24 +127,23 @@ export async function getServerSideProps(context) {
         platformLinks: {},
         skills: [],
     }
-
     try {
         const response = await axios.get('https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/portfolio.json');
-        const data = response.data
+        const data = response.data;
         const key = Object.keys(data).find((objId) => data[objId].userId === payload.userId);
         if (key === undefined) {
             return {
                 props: {
+                    objId: '',
                     data: emptyPortfolioData,
-                    username: payload.username,
-                    userId: payload.userId
+                    userId: payload.userId,
                 }
             }
         }
         return {
             props: {
+                objId: key,
                 data: data[key],
-                username: data[key].username,
                 userId: payload.userId
             }
         }
@@ -113,8 +152,8 @@ export async function getServerSideProps(context) {
         console.log(error);
         return {
             props: {
+                objId: '',
                 data: emptyPortfolioData,
-                username: payload.username,
                 userId: payload.userId
             }
         }
