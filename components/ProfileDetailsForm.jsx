@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./../styles/Dashboard.module.css";
 import { Box, LinearProgress, Typography } from "@mui/material";
-import { CircleUserRound, Pencil, Plus, Save, Search, Trash2, Upload } from "lucide-react";
+import { CircleUserRound, CornerDownLeft, Pencil, Plus, Save, Search, Trash2, Upload } from "lucide-react";
 import { storage } from "./../components/firebaseConfig/FirebaseConfig";
 import { getDownloadURL, uploadBytesResumable, ref as storageRef } from "firebase/storage";
 import axios from "axios";
@@ -157,10 +157,16 @@ export default function ProfileDetailsForm({ portfolioData, setPortfolioData, ha
         );
     }
 
+    const handleAddingSkill = (skillTerm) => {
+        let skill = { name: skillTerm, type: '' };
+        skillTerm.length > 0 && handleSkillClick(skill);
+        setSkillSearchTerm("");
+    }
+
     return (
         <div>
-            <div className="flex w-[100%] border flex-wrap-reverse">
-                <div className="grow border-r px-6 py-2">
+            <div className="w-[100%] border-x-2 border-b-2 border-[#E3E3E3]">
+                <div className="px-6 py-1">
                     <div className={styles.inputField}>
                         <label>Full Name</label><br />
                         <input
@@ -192,103 +198,6 @@ export default function ProfileDetailsForm({ portfolioData, setPortfolioData, ha
                             placeholder="enter your bio briefly..."
                         ></textarea>
                     </div>
-                    <div className={styles.inputField}>
-                        <label>Social Media</label><br />
-                        <div className="mb-5">
-                            {
-                                Object.keys(portfolioData.platformLinks).map((key, index) => {
-                                    return (
-                                        <div key={index} className={styles.addedPlatform}>
-                                            <div className="">{key} :</div>
-                                            <div className={styles.inputLink}>
-                                                <input type="text"
-                                                    placeholder="Enter link"
-                                                    name={`${key}`}
-                                                    value={portfolioData.platformLinks[key]}
-                                                    onChange={(e) => { handleLink(key, e.target.value) }}
-                                                />
-                                                <div
-                                                    onClick={() => handleTrashClick(key)} className={styles.deleteButton}
-                                                >
-                                                    <Trash2 />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )
-                                })
-                            }
-                        </div>
-                        <div className={styles.searchBar}>
-                            <Search />
-                            <input
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                type="text"
-                                placeholder="Search for a platform"
-                            />
-                        </div>
-                        <div className={styles.platformLinks}>
-                            {
-                                filteredPlatforms.map((platform, index) => {
-                                    return (
-                                        <div onClick={() => handlePlatformClick(platform)} key={index} className={styles.platform}>
-                                            <Plus />
-                                            {platform.name}
-                                        </div>
-                                    )
-                                })
-                            }
-                        </div>
-                    </div>
-                    <br />
-                    <hr />
-                    <div className={styles.inputField}>
-                        <label>Skills</label><br />
-                        <div className="flex justify-left align-center flex-wrap gap-4 mb-3">
-                            {
-                                portfolioData.skills.map((skill, index) => {
-                                    return (
-                                        <div key={index} className={styles.addedSkill}>
-                                            <div>{skill?.name}</div>
-                                            <div
-                                                onClick={() => handleSkillTrash(skill?.name)}
-                                                className={styles.deleteButton}
-                                            >
-                                                <Trash2 size={22} />
-                                            </div>
-                                        </div>
-                                    )
-                                })
-                            }
-                        </div>
-                        <div className={styles.searchBar}>
-                            <Search />
-                            <input
-                                value={skillSearchTerm}
-                                onChange={(e) => setSkillSearchTerm(e.target.value)}
-                                type="text"
-                                placeholder="Search for a skill"
-                            />
-                        </div>
-                        <div className={styles.skillItems}>
-                            {
-                                filteredSkills.map((skill, index) => {
-                                    return (
-                                        <div
-                                            onClick={() => handleSkillClick(skill)}
-                                            key={index}
-                                            className={styles.platform}
-                                        >
-                                            <Plus />
-                                            {skill.name}
-                                        </div>
-                                    )
-                                })
-                            }
-                        </div>
-                    </div>
-                </div>
-                <div className="grow  px-6 py-2 flex flex-col align-center">
                     <div className={styles.inputField}>
                         <label>Photo</label>
                         <label htmlFor="file-upload" className={styles.photoLabel}>
@@ -341,7 +250,6 @@ export default function ProfileDetailsForm({ portfolioData, setPortfolioData, ha
                             )
                         }
                     </div>
-                    <hr />
                     <div className={styles.inputField}>
                         <label>Resume</label>
                         <label htmlFor="resume-upload" className={styles.photoLabel}>
@@ -388,7 +296,115 @@ export default function ProfileDetailsForm({ portfolioData, setPortfolioData, ha
                             )
                         }
                     </div>
+                    <div className={styles.inputField}>
+                        <label>Social Media</label><br />
+                        <div className="mb-5">
+                            {
+                                Object.keys(portfolioData.platformLinks).map((key, index) => {
+                                    return (
+                                        <div key={index} className={styles.addedPlatform}>
+                                            <div className="">{key} :</div>
+                                            <div className={styles.inputLink}>
+                                                <input type="text"
+                                                    placeholder="Enter link"
+                                                    name={`${key}`}
+                                                    value={portfolioData.platformLinks[key]}
+                                                    onChange={(e) => { handleLink(key, e.target.value) }}
+                                                />
+                                                <div
+                                                    onClick={() => handleTrashClick(key)} className={styles.deleteButton}
+                                                >
+                                                    <Trash2 />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
+                        <div className={styles.searchBar}>
+                            <Search />
+                            <input
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                type="text"
+                                placeholder="Search for a platform"
+                            />
+                        </div>
+                        <div className={styles.platformLinks}>
+                            {
+                                filteredPlatforms.map((platform, index) => {
+                                    return (
+                                        <div onClick={() => handlePlatformClick(platform)} key={index} className={styles.platform}>
+                                            <Plus />
+                                            {platform.name}
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
+                    </div>
                     <hr />
+                    <div className={styles.inputField}>
+                        <label>Skills</label><br />
+                        <div className="flex justify-left items-center flex-wrap gap-4 mb-3">
+                            {
+                                portfolioData.skills.map((skill, index) => {
+                                    return (
+                                        <div key={index} className={styles.addedSkill}>
+                                            <div>{skill?.name}</div>
+                                            <div
+                                                onClick={() => handleSkillTrash(skill?.name)}
+                                                className={styles.deleteButton}
+                                            >
+                                                <Trash2 size={22} />
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
+                        <div className="text-sm text-gray-500 flex gap-2">
+                            Click enter or click on
+                            <CornerDownLeft size={16} color="black" strokeWidth={3} />
+                            button after entering skill. Don't include special characters except dot(.) hyphen(-)
+                        </div>
+                        <div className={styles.searchBar}>
+                            <input
+                                value={skillSearchTerm}
+                                onChange={(e) => setSkillSearchTerm(e.target.value)}
+                                type="text"
+                                placeholder="Enter your skills Next.js, React JS, MySQL, etc."
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                        handleAddingSkill(skillSearchTerm)
+                                    }
+                                }}
+                            />
+                            <div
+                                className="p-[10px] rounded-full bg-[#d2d2d2] cursor-pointer"
+                                onClick={() => handleAddingSkill(skillSearchTerm)}
+                            >
+                                <CornerDownLeft size={30} strokeWidth={3} />
+                            </div>
+                        </div>
+                        {/* <div className={styles.skillItems}>
+                            {
+                                filteredSkills.map((skill, index) => {
+                                    return (
+                                        <div
+                                            onClick={() => handleSkillClick(skill)}
+                                            key={index}
+                                            className={styles.platform}
+                                        >
+                                            <Plus />
+                                            {skill.name}
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div> */}
+                    </div>
                 </div>
             </div>
             <div className={`${styles.updateButton} float-right`} onClick={() => handleSubmit()}>

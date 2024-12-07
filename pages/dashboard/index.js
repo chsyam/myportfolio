@@ -1,16 +1,98 @@
+import styles from "./../../styles/Dashboard.module.css";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import Intoduction from "./../../components/Introduction/Introduction";
-import TechStack from "./../../components/TechStack/TechStack";
-import styles from "./../../styles/Dashboard.module.css"
 import { decrypt } from "../api/auth/lib";
+import { Box, Tab, Tabs } from "@mui/material";
+import ProfileDetailsForm from "@/components/ProfileDetailsForm";
+import Templates from "@/components/Templates";
+import Domain from "@/components/Domain";
 
-export default function Home({ data }) {
+export default function Home({ objId, data, userId }) {
+    const [value, setValue] = useState(0);
+    const [portfolioData, setPortfolioData] = useState({
+        username: "",
+        userId: userId,
+        workTitle: "",
+        description: "",
+        resumeURL: "",
+        selfieURL: "",
+        platformLinks: {},
+        skills: []
+    })
+    const handleTabChange = (event, newValue) => {
+        setValue(newValue);
+    };
+
+    useEffect(() => {
+        setPortfolioData({
+            ...data, userId: userId
+        });
+    }, [data])
+
+    const handleSubmit = async () => {
+        let response;
+        if (objId) {
+            response = await fetch(`https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/portfolio/${objId}.json`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(portfolioData),
+            });
+        } else {
+            response = await fetch(`https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/portfolio.json`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(portfolioData),
+            });
+        }
+
+        const result = await response.json();
+        console.log('Update successful:', result);
+        if (result) {
+            console.log("saved to database. successfully...!")
+            alert("saved to database. successfully...!")
+            window.location.reload();
+        } else {
+            alert("something went wrong while updating");
+            window.location.reload();
+        }
+    }
+
     return (
         <div className={styles.dashboard}>
-            <Intoduction portfolioData={data} />
+            <Box sx={{ border: 1, borderColor: 'divider', width: '100%' }}>
+                <Tabs
+                    value={value}
+                    onChange={handleTabChange}
+                    variant="scrollable"
+                    scrollButtons="auto"
+                    aria-label="scrollable auto tabs example"
+                    sx={{ bgcolor: '#FFF' }}
+                >
+                    <Tab sx={{ bgcolor: '#FFF' }} label="Profile" />
+                    <Tab sx={{ bgcolor: '#FFF' }} label="Templates" />
+                    <Tab sx={{ bgcolor: '#FFF' }} label="Domain" />
+                </Tabs>
+            </Box>
             {
-                data.skills && data.skills.length !== 0 &&
-                <TechStack portfolioData={data} />
+                value === 0 && (
+                    <ProfileDetailsForm portfolioData={portfolioData} setPortfolioData={setPortfolioData} handleSubmit={handleSubmit} />
+                )
+            }
+            {
+                value === 1 && (
+                    <div>
+                        <Templates />
+                    </div>
+                )
+            }
+            {
+                value === 2 && (
+                    <Domain />
+                )
             }
         </div>
     );
@@ -71,7 +153,7 @@ export async function getServerSideProps(context) {
             props: {
                 data: emptyPortfolioData,
                 username: payload.username,
-                    userId: payload.userId
+                userId: payload.userId
             }
         }
     }
