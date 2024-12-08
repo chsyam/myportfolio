@@ -9,6 +9,16 @@ import Domain from "@/components/Domain";
 
 export default function Home({ objId, data, userId }) {
     const [value, setValue] = useState(0);
+    const [formSubmitStatus, setFormSubmitStatus] = useState(false);
+
+    useEffect(() => {
+        let tabIndex = localStorage.getItem("tabIndex");
+        if (tabIndex) {
+            setValue(parseInt(tabIndex));
+        }
+        localStorage.setItem("tabIndex", value);
+    }, [])
+
     const [portfolioData, setPortfolioData] = useState({
         username: "",
         userId: userId,
@@ -19,8 +29,10 @@ export default function Home({ objId, data, userId }) {
         platformLinks: {},
         skills: []
     })
+
     const handleTabChange = (event, newValue) => {
         setValue(newValue);
+        localStorage.setItem("tabIndex", newValue);
     };
 
     useEffect(() => {
@@ -30,6 +42,7 @@ export default function Home({ objId, data, userId }) {
     }, [data])
 
     const handleSubmit = async () => {
+        setFormSubmitStatus(true);
         let response;
         if (objId) {
             response = await fetch(`https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/portfolio/${objId}.json`, {
@@ -59,6 +72,7 @@ export default function Home({ objId, data, userId }) {
             alert("something went wrong while updating");
             window.location.reload();
         }
+        setFormSubmitStatus(false);
     }
 
     return (
@@ -79,7 +93,7 @@ export default function Home({ objId, data, userId }) {
             </Box>
             {
                 value === 0 && (
-                    <ProfileDetailsForm portfolioData={portfolioData} setPortfolioData={setPortfolioData} handleSubmit={handleSubmit} />
+                    <ProfileDetailsForm portfolioData={portfolioData} setPortfolioData={setPortfolioData} handleSubmit={handleSubmit} formSubmitStatus={formSubmitStatus} />
                 )
             }
             {
@@ -118,6 +132,7 @@ export async function getServerSideProps(context) {
     const emptyPortfolioData = {
         username: '',
         userId: '',
+        webAddress: '',
         workTitle: '',
         selfieURL: '',
         description: '',

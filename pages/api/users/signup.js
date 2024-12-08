@@ -14,6 +14,25 @@ export default async function handler(req, res) {
         portfolioId: ""
     }
 
+    const getWebAddress = (username) => {
+        console.log("username", username)
+        return username.replace(/[^a-zA-Z-]/g, '').toLowerCase();
+    }
+    console.log(getWebAddress(username))
+    console.log(username)
+    const newPortfolioData = {
+        username: '',
+        userId: '',
+        webAddress: getWebAddress(username),
+        workTitle: '',
+        selfieURL: '',
+        description: '',
+        resumeURL: '',
+        platformLinks: {},
+        skills: [],
+    }
+    console.log(newPortfolioData)
+
     try {
         const response = await fetch(`https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/users.json`, {
             method: 'POST',

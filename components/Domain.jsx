@@ -1,10 +1,14 @@
 import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
 import { Globe, Save } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function Domain() {
+    const [domainSubmitStatus, setDomainSubmitStatus] = useState(false);
     const handleSubmit = () => {
-        console.log("saved to database. successfully...!")
+        setDomainSubmitStatus(true);
+        console.log("saved to database. successfully...!");
+        setDomainSubmitStatus(false);
     }
 
     return (
@@ -29,10 +33,25 @@ export default function Domain() {
                     </div>
                 </div>
             </div>
-            <div className="bg-[#4d3e5b] text-[#fff] rounded-md py-[10px] px-[20px] text-[16px] flex items-center justify-center flex-nowrap gap-2 cursor-pointer my-6 w-fit"
+            <div className={`bg-[#4d3e5b] text-[#fff] rounded-md py-[10px] px-[20px] text-[16px] cursor-pointer my-6 w-fit`}
                 onClick={() => handleSubmit()}
+                style={{
+                    opacity: domainSubmitStatus ? 0.7 : 1,
+                    pointerEvents: domainSubmitStatus ? 'none' : 'auto',
+                }}
             >
-                <Save /> save changes
+                {
+                    domainSubmitStatus ? (
+                        <div className="flex justify-center items-center flex-nowrap gap-4">
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                            saving....
+                        </div>
+                    ) : (
+                        <div className="flex items-center justify-center flex-nowrap gap-4">
+                            <Save /> save changes
+                        </div>
+                    )
+                }
             </div>
             <div className="my-4 flex gap-2 flex-wrap">
                 To visit your portfolio, click here

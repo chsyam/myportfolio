@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./../styles/Dashboard.module.css";
-import { Box, LinearProgress, Typography } from "@mui/material";
+import { Box, Divider, LinearProgress, Typography } from "@mui/material";
 import { CircleUserRound, CornerDownLeft, Pencil, Plus, Save, Search, Trash2, Upload } from "lucide-react";
 import { storage } from "./../components/firebaseConfig/FirebaseConfig";
 import { getDownloadURL, uploadBytesResumable, ref as storageRef } from "firebase/storage";
@@ -8,7 +8,7 @@ import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function ProfileDetailsForm({ portfolioData, setPortfolioData, handleSubmit }) {
+export default function ProfileDetailsForm({ portfolioData, setPortfolioData, handleSubmit, formSubmitStatus }) {
     const [searchTerm, setSearchTerm] = useState("");
     const [skillSearchTerm, setSkillSearchTerm] = useState("");
     const [filteredPlatforms, setFilteredPlatforms] = useState([]);
@@ -177,6 +177,7 @@ export default function ProfileDetailsForm({ portfolioData, setPortfolioData, ha
                             placeholder="enter nice looking name..."
                         />
                     </div>
+                    <Divider />
                     <div className={styles.inputField}>
                         <label>Job Title</label><br />
                         <input
@@ -187,6 +188,7 @@ export default function ProfileDetailsForm({ portfolioData, setPortfolioData, ha
                             placeholder="enter Fancy work title..."
                         />
                     </div>
+                    <Divider />
                     <div className={styles.inputField}>
                         <label>Bio</label><br />
                         <textarea
@@ -198,6 +200,7 @@ export default function ProfileDetailsForm({ portfolioData, setPortfolioData, ha
                             placeholder="enter your bio briefly..."
                         ></textarea>
                     </div>
+                    <Divider />
                     <div className={styles.inputField}>
                         <label>Photo</label>
                         <label htmlFor="file-upload" className={styles.photoLabel}>
@@ -210,7 +213,7 @@ export default function ProfileDetailsForm({ portfolioData, setPortfolioData, ha
                                             alt="user image"
                                             src={`${portfolioData.selfieURL}`}
                                             style={{ borderRadius: "50%" }}
-                                            height="150" width="150"
+                                            height={150} width={150}
                                             priority={true}
                                         />
                                     )
@@ -250,6 +253,7 @@ export default function ProfileDetailsForm({ portfolioData, setPortfolioData, ha
                             )
                         }
                     </div>
+                    <Divider />
                     <div className={styles.inputField}>
                         <label>Resume</label>
                         <label htmlFor="resume-upload" className={styles.photoLabel}>
@@ -296,6 +300,7 @@ export default function ProfileDetailsForm({ portfolioData, setPortfolioData, ha
                             )
                         }
                     </div>
+                    <Divider />
                     <div className={styles.inputField}>
                         <label>Social Media</label><br />
                         <div className="mb-5">
@@ -344,7 +349,7 @@ export default function ProfileDetailsForm({ portfolioData, setPortfolioData, ha
                             }
                         </div>
                     </div>
-                    <hr />
+                    <Divider />
                     <div className={styles.inputField}>
                         <label>Skills</label><br />
                         <div className="flex justify-left items-center flex-wrap gap-4 mb-3">
@@ -407,8 +412,25 @@ export default function ProfileDetailsForm({ portfolioData, setPortfolioData, ha
                     </div>
                 </div>
             </div>
-            <div className={`${styles.updateButton} float-right`} onClick={() => handleSubmit()}>
-                <Save /> save changes
+            <div className={`bg-[#4d3e5b] text-[#fff] rounded-md py-[10px] px-[20px] text-[16px] cursor-pointer my-6 w-fit float-right`}
+                onClick={() => handleSubmit()}
+                style={{
+                    opacity: formSubmitStatus ? 0.7 : 1,
+                    pointerEvents: formSubmitStatus ? 'none' : 'auto',
+                }}
+            >
+                {
+                    formSubmitStatus ? (
+                        <div className="flex justify-center items-center flex-nowrap gap-4">
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                            saving....
+                        </div>
+                    ) : (
+                        <div className="flex items-center justify-center flex-nowrap gap-4">
+                            <Save /> save changes
+                        </div>
+                    )
+                }
             </div>
         </div>
     );

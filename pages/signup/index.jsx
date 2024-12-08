@@ -3,13 +3,15 @@ import Link from "next/link";
 import styles from "./Signup.module.css";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import signupHandler from "../api/users/route";
+import { CircularProgress, Divider } from "@mui/material";
 
 export default function Signup({ usersData }) {
     const router = useRouter();
+    const [signupStatus, setSignupStatus] = useState(false);
     const [formError, setFormError] = useState("");
     const [formSuccess, setFormSuccess] = useState("");
     const [formData, setFormData] = useState({
+        fullName: "",
         username: "",
         email: "",
         password: "",
@@ -119,40 +121,9 @@ export default function Signup({ usersData }) {
         });
     }
 
-    const handleDataValidation = () => {
-        return (
-            formData.username === "" ||
-            formData.email === "" ||
-            formData.password === "" ||
-            formData.confirmPassword === "" ||
-            !handleUsernameValidation() ||
-            !handleEmailValidation() ||
-            !handlePasswordValidation() ||
-            !handleConfirmPasswordValidation()
-        );
-    }
-
     const handleSignup = async (e) => {
+        setSignupStatus(true);
         e.preventDefault();
-        // if (handleDataValidation()) {
-        //     setValidationStatus({
-        //         ...validationStatus,
-        //         usernameStatus: (formData.username === "" || !handleUsernameValidation()) ? true : false,
-        //         emailStatus: (formData.email === "" || !handleEmailValidation()) ? true : false,
-        //         passwordStatus: (formData.password === "" || !handlePasswordValidation()) ? true : false,
-        //         confirmPasswordStatus: (formData.confirmPassword === "" || !handleConfirmPasswordValidation()) ? true : false,
-        //     })
-        //     return;
-        // }
-        // console.log(formData);
-        // const emails = Object.keys(usersData).map((user) => usersData[user].email === formData.email);
-        // if (emails.length > 0) {
-        //     setEmailExistsStatus(true);
-        //     return;
-        // } else {
-        //     setEmailExistsStatus(false);
-        // }
-
         try {
             const response = await fetch('./../api/users/signup', {
                 method: 'POST',
@@ -181,69 +152,86 @@ export default function Signup({ usersData }) {
                             userId: data?.userId
                         })
                     })
-
                     console.log(googleSheetResponse)
                 } catch (error) {
                     console.log("error appending user details to google sheet", error)
                 }
                 setTimeout(() => {
-                    setFormSuccess("");
                     window.location.replace('/login');
-                }, 500);
+                }, 200);
             }
         } catch (error) {
             console.error('Error registering user:', error);
         }
+        setSignupStatus(false);
     }
 
     return (
-        <div className={styles.formSection}>
-            <form className={styles.form} onSubmit={handleSignup}>
-                <div className={styles.heading}>
-                    <div className={styles.title}>Create an account</div>
-                    <div className={styles.sectionInfo}>Enter your information to get started</div>
-                </div>
-                <div className={styles.fieldError}>{formError && formError}</div>
-                <div className={styles.fieldSuccess}>{formSuccess && formSuccess}</div>
+        <form className={styles.formContainer} onSubmit={handleSignup}>
+            <div className="text-center my-[20px]">
+                <span className="text-2xl font-normal">
+                    Create an account
+                </span>
+                <br />
+                <span className="text-sm text-[#707070]">
+                    Enter your information to get started
+                </span>
+            </div>
+            <Divider />
+            <div className={styles.formGroup}>
                 <div className={styles.formElement}>
-                    <label htmlFor="username">Full Name</label><br />
-                    <input value={formData.username} onChange={(e) => handleInputChange(e)} type="text" name="username" id="username" placeholder="John Doe" />
-                    <p className={styles.fieldError}>
-                        {validationStatus.usernameStatus && validationErrors.usernameError}
-                    </p>
+                    <label className="text-md text-[#000]" htmlFor="fullName">
+                        Full Name
+                    </label><br />
+                    <input value={formData.fullName} onChange={(e) => handleInputChange(e)} type="text" name="fullName" id="fullName" placeholder="John Doe" />
                 </div>
                 <div className={styles.formElement}>
-                    <label htmlFor="email">Email</label><br />
+                    <label className="text-md text-[#000]" htmlFor="username">
+                        Username
+                    </label><br />
+                    <input value={formData.username} onChange={(e) => handleInputChange(e)} type="text" name="username" id="username" placeholder="johnDoe" />
+                </div>
+            </div>
+            <div className={styles.formGroup}>
+                <div className={styles.formElement}>
+                    <label className="text-md text-[#000]" htmlFor="email">
+                        Email
+                    </label><br />
                     <input
                         value={formData.email} type="email"
                         onChange={(e) => handleInputChange(e)} name="email" id="email" placeholder="john@example.com" />
-                    <p className={styles.fieldError}>
-                        {validationStatus.emailStatus && validationErrors.emailError}
-                    </p>
-                    <p className={styles.fieldError}>
-                        {emailExistsStatus && validationErrors.emailExistsError}
-                    </p>
                 </div>
+            </div>
+            <div className={styles.formGroup}>
                 <div className={styles.formElement}>
-                    <label htmlFor="password">Password</label><br />
+                    <label className="text-md text-[#000]" htmlFor="password">
+                        Password
+                    </label><br />
                     <input value={formData.password} onChange={(e) => handleInputChange(e)} type="password" name="password" id="password" placeholder="Enter password" />
-                    <div className={styles.fieldError}>
-                        {validationStatus.passwordStatus && validationErrors.passwordError}
-                    </div>
                 </div>
                 <div className={styles.formElement}>
-                    <label htmlFor="confirmPassword">Confirm Password</label><br />
+                    <label className="text-md text-[#000]" htmlFor="confirmPassword">
+                        Confirm Password
+                    </label><br />
                     <input value={formData.confirmPassword} onChange={(e) => handleInputChange(e)} type="password" name="confirmPassword" id="confirmPassword" placeholder="Re-type your password to confirm" />
-                    <p className={styles.fieldError}>
-                        {validationStatus.confirmPasswordStatus && validationErrors.confirmPasswordError}
-                    </p>
                 </div>
-                <div className={styles.submitButton}>
-                    <button type="submit">Sign up</button>
-                    <p className={styles.havingAccount}>Already have an account? <Link href="/login">Login</Link></p>
-                </div>
-            </form>
-        </div>
+            </div>
+            <div className={styles.submitButton}>
+                <button type="submit"
+                    style={{
+                        cursor: signupStatus ? 'not-allowed' : 'pointer',
+                        pointerEvents: signupStatus ? 'none' : 'auto',
+                    }}
+                >
+                    {signupStatus && <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>}
+                    <span className="pl-2">{!signupStatus && 'signup'}</span>
+                </button>
+                <p className="text-sm my-4">
+                    Already have an account?
+                    <Link className="text-blue-500 ml-2 font-medium hover:underline" href="/login">Login</Link>
+                </p>
+            </div>
+        </form>
     );
 }
 
@@ -251,7 +239,6 @@ export async function getServerSideProps() {
     try {
         const response = await fetch('https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/users.json');
         let usersData = await response.json();
-        // console.log("usersData", usersData);
         if (usersData === undefined || usersData === null) {
             usersData = [];
         }
