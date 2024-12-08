@@ -223,7 +223,7 @@ export default function Signup({ usersData }) {
                         pointerEvents: signupStatus ? 'none' : 'auto',
                     }}
                 >
-                    {signupStatus && <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>}
+                    {signupStatus && <CircularProgress size={16} color="white" sx={{ strokeWidth: 3 }} />}
                     <span className="pl-2">{!signupStatus && 'signup'}</span>
                 </button>
                 <p className="text-sm my-4">

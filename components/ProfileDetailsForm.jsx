@@ -9,6 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default function ProfileDetailsForm({ portfolioData, setPortfolioData, handleSubmit, formSubmitStatus }) {
+    console.log(portfolioData);
     const [searchTerm, setSearchTerm] = useState("");
     const [skillSearchTerm, setSkillSearchTerm] = useState("");
     const [filteredPlatforms, setFilteredPlatforms] = useState([]);
@@ -75,8 +76,9 @@ export default function ProfileDetailsForm({ portfolioData, setPortfolioData, ha
     }
 
     const handleSkillClick = (skill) => {
-        let skillsByName = portfolioData.skills.filter(item => item.name === skill.name);
-        if (skillsByName.length === 0) {
+        let skillsByName = portfolioData.skills?.filter(item => item.name === skill.name);
+        console.log(skillsByName);
+        if (!skillsByName || skillsByName?.length === 0) {
             setPortfolioData({
                 ...portfolioData, skills: [...portfolioData.skills, skill]
             })
@@ -305,7 +307,7 @@ export default function ProfileDetailsForm({ portfolioData, setPortfolioData, ha
                         <label>Social Media</label><br />
                         <div className="mb-5">
                             {
-                                Object.keys(portfolioData.platformLinks).map((key, index) => {
+                                Object.keys(portfolioData.platformLinks || {}).map((key, index) => {
                                     return (
                                         <div key={index} className={styles.addedPlatform}>
                                             <div className="">{key} :</div>
@@ -354,7 +356,7 @@ export default function ProfileDetailsForm({ portfolioData, setPortfolioData, ha
                         <label>Skills</label><br />
                         <div className="flex justify-left items-center flex-wrap gap-4 mb-3">
                             {
-                                portfolioData.skills.map((skill, index) => {
+                                portfolioData.skills?.map((skill, index) => {
                                     return (
                                         <div key={index} className={styles.addedSkill}>
                                             <div>{skill?.name}</div>

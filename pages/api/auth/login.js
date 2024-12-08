@@ -18,12 +18,15 @@ export default async function loginHandler(req, res) {
                     username: user?.username,
                     email: user?.email,
                     userId: user?.userId,
+                    webAddress: user?.webAddress,
                     expires: expires
                 });
+
                 const token = jwt.sign({
                     userId: user?.userId,
                     username: user?.username,
                     email: user?.email,
+                    webAddress: user?.webAddress,
                 }, process.env.JWT_SECRET, {
                     expiresIn: '1440m',
                 })

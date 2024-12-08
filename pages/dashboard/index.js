@@ -7,7 +7,7 @@ import ProfileDetailsForm from "@/components/ProfileDetailsForm";
 import Templates from "@/components/Templates";
 import Domain from "@/components/Domain";
 
-export default function Home({ objId, data, userId }) {
+export default function Home({ objId, data, userId, webAddress }) {
     const [value, setValue] = useState(0);
     const [formSubmitStatus, setFormSubmitStatus] = useState(false);
 
@@ -22,6 +22,7 @@ export default function Home({ objId, data, userId }) {
     const [portfolioData, setPortfolioData] = useState({
         username: "",
         userId: userId,
+        webAddress: webAddress,
         workTitle: "",
         description: "",
         resumeURL: "",
@@ -37,12 +38,13 @@ export default function Home({ objId, data, userId }) {
 
     useEffect(() => {
         setPortfolioData({
-            ...data, userId: userId
+            ...data, userId: userId, webAddress: webAddress
         });
     }, [data])
 
     const handleSubmit = async () => {
         setFormSubmitStatus(true);
+        console.log("portfolioData", portfolioData);
         let response;
         if (objId) {
             response = await fetch(`https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/portfolio/${objId}.json`, {
@@ -105,7 +107,7 @@ export default function Home({ objId, data, userId }) {
             }
             {
                 value === 2 && (
-                    <Domain />
+                    <Domain objId={objId} portfolioData={portfolioData} setPortfolioData={setPortfolioData} />
                 )
             }
         </div>
@@ -116,6 +118,7 @@ export async function getServerSideProps(context) {
     const { req, res } = context;
     const token = req?.cookies['token']
     const payload = await decrypt(token)
+    console.log("payload", payload);
     if (!payload || payload === null || payload === undefined) {
         res.setHeader('Set-Cookie', [
             'token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT;',
@@ -132,7 +135,7 @@ export async function getServerSideProps(context) {
     const emptyPortfolioData = {
         username: '',
         userId: '',
-        webAddress: '',
+        webAddress: payload?.webAddress || "",
         workTitle: '',
         selfieURL: '',
         description: '',
@@ -150,7 +153,8 @@ export async function getServerSideProps(context) {
                 props: {
                     data: emptyPortfolioData,
                     username: payload.username,
-                    userId: payload.userId
+                    userId: payload.userId,
+                    webAddress: payload.webAddress || ""
                 }
             }
         }
@@ -158,17 +162,20 @@ export async function getServerSideProps(context) {
             props: {
                 data: data[key],
                 username: data[key].username,
-                userId: payload.userId
+                userId: payload.userId,
+                webAddress: payload.webAddress || ""
             }
         }
     }
+
     catch (error) {
         console.log(error);
         return {
             props: {
                 data: emptyPortfolioData,
                 username: payload.username,
-                userId: payload.userId
+                userId: payload.userId,
+                webAddress: payload.webAddress || ""
             }
         }
     }

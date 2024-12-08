@@ -1,15 +1,61 @@
 import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
 import { Globe, Save } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function Domain() {
+export default function Domain({ objId, portfolioData, setPortfolioData }) {
     const [domainSubmitStatus, setDomainSubmitStatus] = useState(false);
-    const handleSubmit = () => {
+    const [domain, setDomain] = useState('');
+
+    useEffect(() => {
+        console.log(portfolioData);
+        if (portfolioData?.webAddress) {
+            setDomain(portfolioData.webAddress);
+        }
+    }, [portfolioData])
+
+    const handleDomainChange = (e) => {
+        setPortfolioData({
+            ...portfolioData, webAddress: e.target.value
+        })
+    }
+
+    const handleSubmit = async () => {
         setDomainSubmitStatus(true);
-        console.log("saved to database. successfully...!");
+
+        let response;
+        if (objId) {
+            response = await fetch(`https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/portfolio/${objId}.json`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(portfolioData),
+            });
+        } else {
+            response = await fetch(`https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/portfolio.json`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(portfolioData),
+            });
+        }
+
+        const result = await response.json();
+        console.log('Update successful:', result);
+        if (result) {
+            console.log("saved to database. successfully...!")
+            alert("saved to database. successfully...!")
+            window.location.reload();
+        } else {
+            alert("something went wrong while updating");
+            window.location.reload();
+        }
+
         setDomainSubmitStatus(false);
     }
+    console.log(portfolioData);
 
     return (
         <div className="w-[100%] border-x-2 border-b-2 border-[#E3E3E3] px-6 py-1">
@@ -29,7 +75,7 @@ export default function Domain() {
                     </span>
                     <div>
                         <input className="w-full border bg-[#f3f4f6] py-2 px-4 my-2 rounded-md"
-                        />
+                            value={domain} onChange={(e) => handleDomainChange(e)} />
                     </div>
                 </div>
             </div>
