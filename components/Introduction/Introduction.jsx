@@ -1,8 +1,6 @@
 import GitHub from "../Images/Icons/Github";
 import LinkedIn from "../Images/Icons/LinkedIn";
 import styles from "./Introduction.module.css";
-import WavingHand from "./../../components/Images/waving_hand.png";
-import Image from "next/image";
 import Link from "next/link";
 import Instagram from "../Images/Icons/Instagram";
 import Facebook from "../Images/Icons/Facebook";
@@ -25,8 +23,8 @@ export default function Intoduction({ portfolioData }) {
 
     const imageStyles = (imageURL) => {
         return {
-            width: "400px",
-            height: "400px",
+            width: "300px",
+            height: "300px",
             borderRadius: '60 % 40 % 30 % 70 % / 60% 30% 70% 40%',
             backgroundImage: 'linear-gradient(45deg, #08aeea, #2af598, 100%)',
             border: '3px solid #000',

@@ -9,7 +9,6 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default function ProfileDetailsForm({ portfolioData, setPortfolioData, handleSubmit, formSubmitStatus }) {
-    console.log(portfolioData);
     const [searchTerm, setSearchTerm] = useState("");
     const [skillSearchTerm, setSkillSearchTerm] = useState("");
     const [filteredPlatforms, setFilteredPlatforms] = useState([]);
@@ -77,7 +76,6 @@ export default function ProfileDetailsForm({ portfolioData, setPortfolioData, ha
 
     const handleSkillClick = (skill) => {
         let skillsByName = portfolioData.skills?.filter(item => item.name === skill.name);
-        console.log(skillsByName);
         if (!skillsByName || skillsByName?.length === 0) {
             setPortfolioData({
                 ...portfolioData, skills: [...portfolioData.skills, skill]

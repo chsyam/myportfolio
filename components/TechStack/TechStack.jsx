@@ -18,15 +18,10 @@ export default function TechStack({ portfolioData }) {
                 <table>
                     <tbody>
                         <tr>
-                            {/* <td>
-                                <div className={styles.skillType}>
-                                    Technical Skills
-                                </div>
-                            </td> */}
                             <td className={styles.skillsTD}>
                                 {
                                     portfolioData.skills.map((skill, index) => {
-                                        return skill.type === "technical" && (
+                                        return (
                                             <div className={styles.skillCell} key={index}>
                                                 {skill.name}
                                             </div>

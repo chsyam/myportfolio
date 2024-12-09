@@ -16,109 +16,25 @@ export default function Signup({ usersData }) {
         email: "",
         password: "",
         confirmPassword: "",
+        webAddress: "",
     })
-
-    const [validationStatus, setValidationStatus] = useState({
-        usernameStatus: false,
-        emailStatus: false,
-        passwordStatus: false,
-        confirmPasswordStatus: false,
-    })
-
-    const [emailExistsStatus, setEmailExistsStatus] = useState(false);
-    const validationErrors = {
-        usernameError: "Name must be at least 3 characters long.",
-        emailError: "Please enter a valid email address.",
-        emailExistsError: "Email already exists.",
-        passwordError: `Password must:
-            - Be at least 8 characters long
-            - Contain at least one uppercase letter
-            - Contain at least one lowercase letter
-            - Contain at least one number
-            - Contain at least one special character`,
-        confirmPasswordError: "Passwords do not match.",
-    }
-
-    const validateEmail = (email) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-    };
-
-    const validatePassword = (password) => {
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-        return passwordRegex.test(password);
-    };
-
-    const handleUsernameValidation = () => {
-        const username = formData.username.trim();
-        if (username !== "" && username.length < 3) return false;
-        return true;
-    }
-
-    const handleEmailValidation = () => {
-        const email = formData.email.trim();
-        if (email !== "" && !validateEmail(email)) return false;
-        return true;
-    }
-
-    const handlePasswordValidation = () => {
-        const password = formData.password.trim();
-        if (password !== "" && !validatePassword(password)) return false;
-        return true;
-    }
-
-    const handleConfirmPasswordValidation = () => {
-        const confirmPassword = formData.confirmPassword.trim();
-        const password = formData.password.trim();
-        if (confirmPassword !== "" && confirmPassword !== password) return false;
-        return true;
-    }
-
-    useEffect(() => {
-        const res = handleUsernameValidation();
-        setValidationStatus({
-            ...validationStatus,
-            usernameStatus: !res,
-        })
-    }, [formData.username])
-
-    useEffect(() => {
-        console.log(formData.email, validationStatus.emailStatus)
-        if (formData.email !== "" && validateEmail(formData.email)) {
-            setValidationStatus({
-                ...validationStatus,
-                emailStatus: true,
-            })
-        } else {
-            setValidationStatus({
-                ...validationStatus,
-                emailStatus: false,
-            })
-        }
-    }, [formData.email])
-
-    useEffect(() => {
-        const res = handlePasswordValidation();
-        setValidationStatus({
-            ...validationStatus,
-            passwordStatus: !res,
-        })
-    }, [formData.password])
-
-    useEffect(() => {
-        const res = handleConfirmPasswordValidation();
-        setValidationStatus({
-            ...validationStatus,
-            confirmPasswordStatus: !res,
-        })
-    }, [formData.confirmPassword, formData.password])
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
+        console.log(name, value)
         setFormData({
             ...formData,
             [name]: value
         });
+
+        if (name === 'username') {
+            let webAddress = value.replace(/[^a-zA-Z-]/g, '').toLowerCase();
+            setFormData({
+                ...formData,
+                [name]: value,
+                webAddress: webAddress
+            });
+        }
     }
 
     const handleSignup = async (e) => {
@@ -146,6 +62,7 @@ export default function Signup({ usersData }) {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
+                            fullName: formData.fullName,
                             username: formData.username,
                             email: formData.email,
                             password: data?.hashedPassword,

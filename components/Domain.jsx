@@ -1,36 +1,33 @@
-import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
 import { Globe, Save } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-export default function Domain({ objId, portfolioData, setPortfolioData }) {
+export default function Domain({ portfolioKey, portfolioData, setPortfolioData }) {
     const [domainSubmitStatus, setDomainSubmitStatus] = useState(false);
     const [domain, setDomain] = useState('');
 
     useEffect(() => {
-        console.log(portfolioData);
         if (portfolioData?.webAddress) {
             setDomain(portfolioData.webAddress);
         }
     }, [portfolioData])
 
     const handleDomainChange = (e) => {
-        setPortfolioData({
-            ...portfolioData, webAddress: e.target.value
-        })
+        setDomain(e.target.value);
     }
 
     const handleSubmit = async () => {
         setDomainSubmitStatus(true);
+        let newPortfolioData = { ...portfolioData, webAddress: domain };
 
         let response;
-        if (objId) {
-            response = await fetch(`https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/portfolio/${objId}.json`, {
+        if (portfolioKey) {
+            response = await fetch(`https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/portfolio/${portfolioKey}.json`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(portfolioData),
+                body: JSON.stringify(newPortfolioData),
             });
         } else {
             response = await fetch(`https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/portfolio.json`, {
@@ -38,7 +35,7 @@ export default function Domain({ objId, portfolioData, setPortfolioData }) {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(portfolioData),
+                body: JSON.stringify(newPortfolioData),
             });
         }
 
@@ -55,7 +52,6 @@ export default function Domain({ objId, portfolioData, setPortfolioData }) {
 
         setDomainSubmitStatus(false);
     }
-    console.log(portfolioData);
 
     return (
         <div className="w-[100%] border-x-2 border-b-2 border-[#E3E3E3] px-6 py-1">

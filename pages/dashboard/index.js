@@ -7,7 +7,7 @@ import ProfileDetailsForm from "@/components/ProfileDetailsForm";
 import Templates from "@/components/Templates";
 import Domain from "@/components/Domain";
 
-export default function Home({ objId, data, userId, webAddress }) {
+export default function Home({ portfolioKey, data, userInfo }) {
     const [value, setValue] = useState(0);
     const [formSubmitStatus, setFormSubmitStatus] = useState(false);
 
@@ -20,9 +20,9 @@ export default function Home({ objId, data, userId, webAddress }) {
     }, [])
 
     const [portfolioData, setPortfolioData] = useState({
-        username: "",
-        userId: userId,
-        webAddress: webAddress,
+        username: userInfo?.username,
+        userId: userInfo?.userId,
+        webAddress: userInfo?.webAddress,
         workTitle: "",
         description: "",
         resumeURL: "",
@@ -38,16 +38,31 @@ export default function Home({ objId, data, userId, webAddress }) {
 
     useEffect(() => {
         setPortfolioData({
-            ...data, userId: userId, webAddress: webAddress
+            ...data, platformLinks: data?.platformLinks || {}, skills: data?.skills || []
         });
     }, [data])
+
+    useEffect(() => {
+        if (portfolioData.skills === "") {
+            setPortfolioData({
+                ...portfolioData,
+                skills: []
+            })
+        }
+        if (portfolioData.platformLinks === "") {
+            setPortfolioData({
+                ...portfolioData,
+                platformLinks: {}
+            })
+        }
+    }, [portfolioData])
 
     const handleSubmit = async () => {
         setFormSubmitStatus(true);
         console.log("portfolioData", portfolioData);
         let response;
-        if (objId) {
-            response = await fetch(`https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/portfolio/${objId}.json`, {
+        if (portfolioKey) {
+            response = await fetch(`https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/portfolio/${portfolioKey}.json`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -107,7 +122,7 @@ export default function Home({ objId, data, userId, webAddress }) {
             }
             {
                 value === 2 && (
-                    <Domain objId={objId} portfolioData={portfolioData} setPortfolioData={setPortfolioData} />
+                    <Domain portfolioKey={portfolioKey} portfolioData={portfolioData} setPortfolioData={setPortfolioData} />
                 )
             }
         </div>
@@ -117,9 +132,9 @@ export default function Home({ objId, data, userId, webAddress }) {
 export async function getServerSideProps(context) {
     const { req, res } = context;
     const token = req?.cookies['token']
-    const payload = await decrypt(token)
-    console.log("payload", payload);
-    if (!payload || payload === null || payload === undefined) {
+    const userInfo = await decrypt(token)
+    console.log("payload", userInfo);
+    if (!userInfo || userInfo === null || userInfo === undefined) {
         res.setHeader('Set-Cookie', [
             'token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT;',
         ]);
@@ -133,9 +148,10 @@ export async function getServerSideProps(context) {
     }
 
     const emptyPortfolioData = {
-        username: '',
-        userId: '',
-        webAddress: payload?.webAddress || "",
+        fullName: userInfo?.username || "",
+        username: userInfo?.username || "",
+        userId: userInfo?.userId || "",
+        webAddress: userInfo?.username || "",
         workTitle: '',
         selfieURL: '',
         description: '',
@@ -147,23 +163,20 @@ export async function getServerSideProps(context) {
     try {
         const response = await axios.get('https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/portfolio.json');
         const data = response.data
-        const key = Object.keys(data).find((objId) => data[objId].userId === payload.userId);
+        const key = Object.keys(data).find((objId) => data[objId].userId === userInfo.userId);
         if (key === undefined) {
             return {
                 props: {
                     data: emptyPortfolioData,
-                    username: payload.username,
-                    userId: payload.userId,
-                    webAddress: payload.webAddress || ""
+                    userInfo: userInfo
                 }
             }
         }
         return {
             props: {
+                portfolioKey: key,
                 data: data[key],
-                username: data[key].username,
-                userId: payload.userId,
-                webAddress: payload.webAddress || ""
+                userInfo: userInfo
             }
         }
     }
@@ -173,9 +186,7 @@ export async function getServerSideProps(context) {
         return {
             props: {
                 data: emptyPortfolioData,
-                username: payload.username,
-                userId: payload.userId,
-                webAddress: payload.webAddress || ""
+                userInfo: userInfo
             }
         }
     }

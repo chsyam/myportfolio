@@ -7,7 +7,7 @@
 }
 
 .summaryPart {
-    width: 40%;
+    width: 50%;
 }
 
 .workTitle {
@@ -17,8 +17,8 @@
 }
 
 .titleText {
-    font-size: 60px;
-    font-weight: 600;
+    font-size: 40px;
+    font-weight: 500;
     font-family: 'Poppins', sans-serif;
 }
 
