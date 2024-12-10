@@ -1,17 +1,14 @@
 import Intoduction from "@/components/Introduction/Introduction";
 import TechStack from "@/components/TechStack/TechStack";
 import axios from "axios";
-import { useRouter } from "next/router";
-import styles from "./../../styles/Dashboard.module.css"
+import Template from "@/components/template-1";
 
-export default function EndUserView({ data }) {
+export default function EndUserView({ data, domainName }) {
+    console.log(`fetching data for ${domainName}`);
+
     return (
-        <div className={styles.dashboard}>
-            <Intoduction portfolioData={data} />
-            {
-                data.skills && data.skills.length !== 0 &&
-                <TechStack portfolioData={data} />
-            }
+        <div>
+            <Template portfolioData={data} />
         </div>
     );
 }
@@ -47,7 +44,6 @@ export async function getServerSideProps(context) {
                 props: {
                     data: emptyPortfolioData,
                     domainName: domainName,
-                    username: '',
                 }
             }
         }
@@ -57,7 +53,6 @@ export async function getServerSideProps(context) {
                 props: {
                     data: emptyPortfolioData,
                     domainName: domainName,
-                    username: '',
                 }
             }
         }
@@ -65,7 +60,6 @@ export async function getServerSideProps(context) {
             props: {
                 data: data[objId],
                 domainName: domainName,
-                username: data[objId].username,
             }
         }
     }
@@ -75,7 +69,6 @@ export async function getServerSideProps(context) {
             props: {
                 data: emptyPortfolioData,
                 domainName: domainName,
-                username: '',
             }
         }
     }

@@ -20,41 +20,39 @@ export default function Navbar({ username }) {
     }
 
     return (
-        <div>
-            <div className={styles.navbar}>
-                <div
-                    className="text-2xl font-semibold cursor-pointer"
-                    onClick={() => { window.open("https://www.chsyamkumar.in/", "_blank"); }}
-                >
-                    {username ? username : "myPortfolio.com"}
-                </div>
-                {
-                    domainName === undefined && (
-                        username ? (
-                            <div className="flex justify-center align-middle gap-5">
-                                <Button variant="outlined" size="medium" color="error"
-                                    startIcon={<LogOut />}
-                                    onClick={() => logoutHandler()}
-                                >Logout</Button>
-                            </div>
-                        ) : (
-                            <div className="flex justify-center align-middle gap-5 font-semibold text-xl">
-                                <Button variant="outlined" size="medium"
-                                    startIcon={<LogIn />}
-                                    onClick={() => router.push("/login")}
-                                >
-                                    Login
-                                </Button>
-                                <Button variant="contained" size="medium"
-                                    onClick={() => router.push("/signup")}
-                                >
-                                    Signup
-                                </Button>
-                            </div>
-                        )
-                    )
-                }
+        <div className={styles.navbar}>
+            <div
+                className="text-2xl font-semibold cursor-pointer"
+                onClick={() => { window.open("https://www.chsyamkumar.in/", "_blank"); }}
+            >
+                {username ? username : "myPortfolio.com"}
             </div>
-        </div >
+            {
+                domainName === undefined && (
+                    username ? (
+                        <div className="flex justify-center align-middle gap-5">
+                            <Button variant="outlined" size="medium" color="error"
+                                startIcon={<LogOut />}
+                                onClick={() => logoutHandler()}
+                            >Logout</Button>
+                        </div>
+                    ) : (
+                        <div className="flex justify-center align-middle gap-5 font-semibold text-xl">
+                            <Button variant="outlined" size="medium"
+                                startIcon={<LogIn />}
+                                onClick={() => router.push("/login")}
+                            >
+                                Login
+                            </Button>
+                            <Button variant="contained" size="medium"
+                                onClick={() => router.push("/signup")}
+                            >
+                                Signup
+                            </Button>
+                        </div>
+                    )
+                )
+            }
+        </div>
     );
 }
