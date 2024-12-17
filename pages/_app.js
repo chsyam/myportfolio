@@ -3,7 +3,7 @@ import "./../styles/globals.css";
 
 function MyApp({ Component, pageProps }) {
     return (
-        <Layout username={pageProps.username} >
+        <Layout username={pageProps.username}>
             <Component {...pageProps} />
         </Layout>
     );

@@ -28,7 +28,8 @@ export default function Home({ portfolioKey, data, userInfo }) {
         resumeURL: "",
         selfieURL: "",
         platformLinks: {},
-        skills: []
+        skills: [],
+        template: '1'
     })
 
     const handleTabChange = (event, newValue) => {
@@ -116,7 +117,7 @@ export default function Home({ portfolioKey, data, userInfo }) {
             {
                 value === 1 && (
                     <div>
-                        <Templates />
+                        <Templates portfolioKey={portfolioKey} portfolioData={portfolioData} />
                     </div>
                 )
             }
@@ -158,6 +159,7 @@ export async function getServerSideProps(context) {
         resumeURL: '',
         platformLinks: {},
         skills: [],
+        template: '1'
     }
 
     try {

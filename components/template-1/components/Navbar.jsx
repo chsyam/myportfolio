@@ -7,7 +7,7 @@ export default function EndUserNavbar({ username, resumeURL }) {
     const router = useRouter();
 
     return (
-        <header className="fixed top-0 left-0 right-0 bg-white/50 backdrop-blur-sm z-10">
+        <header className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-sm z-10">
             <nav className='max-w-6xl mx-auto px-4 py-4 flex justify-between items-center'>
                 <div className="text-xl font-semibold text-[#4D3E5B] cursor-pointer"
                     onClick={() => window.location.reload()}

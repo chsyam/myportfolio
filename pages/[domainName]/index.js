@@ -1,8 +1,12 @@
-import Template from "@/components/template-1";
 import axios from "axios";
+import dynamic from "next/dynamic";
 
 export default function EndUserView({ data, domainName }) {
     console.log(`fetching data for ${domainName}`);
+
+    const Template = dynamic(() => import(`@/components/template-${data?.template || 1}`), {
+        ssr: false,
+    });
 
     return (
         <div>
@@ -24,6 +28,7 @@ export async function getServerSideProps(context) {
         platformLinks: {},
         skills: [],
         webAddress: "",
+        template: '1'
     }
 
     try {

@@ -4,7 +4,6 @@ import { Box, Divider, LinearProgress, Typography } from "@mui/material";
 import { CircleUserRound, CornerDownLeft, Pencil, Plus, Save, Search, Trash2, Upload } from "lucide-react";
 import { storage } from "./../components/firebaseConfig/FirebaseConfig";
 import { getDownloadURL, uploadBytesResumable, ref as storageRef } from "firebase/storage";
-import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -212,9 +211,9 @@ export default function ProfileDetailsForm({ portfolioData, setPortfolioData, ha
                                         <Image
                                             alt="user image"
                                             src={`${portfolioData.selfieURL}`}
-                                            style={{ borderRadius: "50%" }}
                                             height={150} width={150}
                                             priority={true}
+                                            style={{ boxShadow: '1px 1px 6px black' }}
                                         />
                                     )
                                 }

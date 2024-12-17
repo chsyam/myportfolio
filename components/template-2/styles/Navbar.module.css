@@ -1,0 +1,38 @@
+.navbar {
+    height: 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 5%;
+    background-color: #FFFFFF;
+    box-shadow: 1px 8px 8px solid rgb(48, 48, 48);
+}
+
+.editBanner {
+    text-align: center;
+    padding: 5px 0;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    background: #c0f4d7;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.editBanner span {
+    cursor: pointer;
+}
+
+.editBanner:hover {
+    text-decoration: underline;
+    color: #0015ff;
+}
+
+@media (max-width: 800px) {
+    .navbar {
+        height: 70px;
+        padding: 0 3%;
+    }
+}
