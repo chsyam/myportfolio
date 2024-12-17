@@ -1,7 +1,5 @@
-import Intoduction from "@/components/Introduction/Introduction";
-import TechStack from "@/components/TechStack/TechStack";
-import axios from "axios";
 import Template from "@/components/template-1";
+import axios from "axios";
 
 export default function EndUserView({ data, domainName }) {
     console.log(`fetching data for ${domainName}`);
@@ -14,7 +12,6 @@ export default function EndUserView({ data, domainName }) {
 }
 
 export async function getServerSideProps(context) {
-    const { req, res } = context;
     let domainName = "";
     const emptyPortfolioData = {
         fullName: "",
