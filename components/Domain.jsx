@@ -8,7 +8,7 @@ export default function Domain({ portfolioKey, portfolioData, setPortfolioData }
 
     useEffect(() => {
         if (portfolioData?.webAddress) {
-            setDomain(portfolioData.webAddress);
+            setDomain(portfolioData?.webAddress);
         }
     }, [portfolioData])
 
@@ -99,7 +99,7 @@ export default function Domain({ portfolioKey, portfolioData, setPortfolioData }
                 To visit your portfolio, click here
                 <Link
                     target="_blank"
-                    href={`${window.location.protocol + "//" + window.location.host + "/"}`}
+                    href={`${window.location.protocol + "//" + window.location.host + "/" + portfolioData?.webAddress}`}
                 >
                     <Globe color="blue" />
                 </Link>
