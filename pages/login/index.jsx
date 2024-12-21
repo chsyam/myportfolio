@@ -1,11 +1,10 @@
-import { useState } from "react";
-import styles from "./Login.module.css"
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import styles from "./Login.module.css"
+import { ArrowLeft } from "lucide-react";
 import { CircularProgress, Divider } from "@mui/material";
 
 export default function Login() {
-    const router = useRouter();
     const [loginStatus, setLoginStatus] = useState(false);
     const [loginError, setLoginError] = useState("");
     const [loginSuccess, setLoginSuccess] = useState("");
@@ -13,12 +12,18 @@ export default function Login() {
         email: "syamkumar6845@gmail.com",
         password: "Syam@190543"
     })
+
     const handleChange = (e) => {
         setFormData({
             ...formData,
             [e.target.name]: e.target.value
         })
     }
+
+    useEffect(() => {
+        document.title = "Login | profolioSpace"
+    }, [])
+
     const handleSubmit = async (e) => {
         setLoginStatus(true);
         e.preventDefault();
@@ -55,62 +60,63 @@ export default function Login() {
     }
 
     return (
-        <div className={styles.formContainer}>
-            <div className="text-center my-[20px] mx-[5%]">
-                <span className="text-2xl font-normal">
-                    Login to your account
-                </span>
-                <br />
-                <span className="text-sm text-[#707070]">
-                    Enter your information to get started
-                </span>
+        <div className="flex justify-center p-4 mt-12">
+            <div className="w-full max-w-md">
+                <div className="space-y-1 mb-[25px]">
+                    <div className="text-3xl font-semibold">Welcome back</div>
+                    <div className="text-[#64748B]">
+                        Enter your email and password to access your portfolio
+                    </div>
+                </div>
+                <Divider />
+                <div>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        {
+                            loginError && (
+                                <div className={styles.fieldError}>
+                                    {loginError}
+                                </div>
+                            )
+                        }
+                        {
+                            loginSuccess && (
+                                <div className={styles.fieldSuccess}>
+                                    {loginSuccess}
+                                </div>
+                            )
+                        }
+                        <div className={styles.formElement}>
+                            <label className="text-md text-[#000]" htmlFor="email">
+                                Email
+                            </label><br />
+                            <input
+                                value={formData.email}
+                                onChange={handleChange} name="email" id="email" placeholder="john@example.com" />
+                        </div>
+                        <div className={styles.formElement}>
+                            <label className="text-md text-[#000]" htmlFor="password">Password</label><br />
+                            <input
+                                value={formData.password}
+                                onChange={handleChange} type="password" name="password" id="password" placeholder="Enter password" />
+                        </div>
+                        <div className={styles.submitButton}>
+                            <button type="submit"
+                                style={{
+                                    cursor: loginStatus ? 'not-allowed' : 'pointer',
+                                    pointerEvents: loginStatus ? 'none' : 'auto',
+                                }}
+                            >
+                                {loginStatus && <CircularProgress size={16} color="white" sx={{ strokeWidth: 3 }} />}
+                                <span className="pl-2">{!loginStatus && "Login"}</span>
+                            </button>
+                            <p className="text-sm my-4">
+                                Don't have an account?
+                                <Link className="text-blue-500 ml-2 font-medium hover:underline" href="/signup">Register</Link>
+                            </p>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <Divider />
-            <form onSubmit={handleSubmit}>
-                {
-                    loginError && (
-                        <div className={styles.fieldError}>
-                            {loginError}
-                        </div>
-                    )
-                }
-                {
-                    loginSuccess && (
-                        <div className={styles.fieldSuccess}>
-                            {loginSuccess}
-                        </div>
-                    )
-                }
-                <div className={styles.formElement}>
-                    <label className="text-md text-[#000]" htmlFor="email">
-                        Email
-                    </label><br />
-                    <input
-                        value={formData.email}
-                        onChange={handleChange} name="email" id="email" placeholder="john@example.com" />
-                </div>
-                <div className={styles.formElement}>
-                    <label className="text-md text-[#000]" htmlFor="password">Password</label><br />
-                    <input
-                        value={formData.password}
-                        onChange={handleChange} type="password" name="password" id="password" placeholder="Enter password" />
-                </div>
-                <div className={styles.submitButton}>
-                    <button type="submit"
-                        style={{
-                            cursor: loginStatus ? 'not-allowed' : 'pointer',
-                            pointerEvents: loginStatus ? 'none' : 'auto',
-                        }}
-                    >
-                        {loginStatus && <CircularProgress size={16} color="white" sx={{ strokeWidth: 3 }} />}
-                        <span className="pl-2">{!loginStatus && "Login"}</span>
-                    </button>
-                    <p className="text-sm my-4">
-                        Don't have an account?
-                        <Link className="text-blue-500 ml-2 font-medium hover:underline" href="/signup">Register</Link>
-                    </p>
-                </div>
-            </form>
         </div>
     );
 }

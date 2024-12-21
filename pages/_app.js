@@ -10,7 +10,7 @@ function MyApp({ Component, pageProps }) {
     return (
         <Layout>
             {
-                router.pathname.includes("dashboard") && (
+                (router.pathname.includes("dashboard") || router.pathname.includes("login") || router.pathname.includes("signup")) && (
                     <UserNavbar username={pageProps.userInfo?.username} />
                 )
             }

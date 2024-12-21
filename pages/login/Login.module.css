@@ -17,9 +17,16 @@
 
 .formElement input {
     padding: 10px 10px;
-    border-radius: 5px;
-    border: 1px solid rgb(171, 170, 170);
-    width: 400px;
+    border-radius: 5px 5px 0 0;
+    border-bottom: 2px solid rgb(165, 165, 165);
+    margin: 5px 0 0 0;
+    width: 100%;
+    outline: none;
+    transition: 0.4s all ease-in-out;
+}
+
+.formElement input:focus {
+    border-bottom: 2px solid #000;
 }
 
 .fieldError {
@@ -56,6 +63,7 @@
     border-radius: 5px;
     cursor: pointer;
     width: 150px;
+    margin: 10px 0 0 0;
 }
 
 @keyframes gradientAnimation {
