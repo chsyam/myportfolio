@@ -18,7 +18,7 @@ export default function Domain({ portfolioKey, portfolioData, setPortfolioData }
 
     const handleSubmit = async () => {
         setDomainSubmitStatus(true);
-        let newPortfolioData = { ...portfolioData, webAddress: domain };
+        let newPortfolioData = { ...portfolioData, webAddress: domain, lastUpdatedOn: new Date() };
 
         let response;
         if (portfolioKey) {

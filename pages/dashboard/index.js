@@ -29,7 +29,8 @@ export default function Home({ portfolioKey, data, userInfo }) {
         selfieURL: "",
         platformLinks: {},
         skills: [],
-        template: '1'
+        template: '1',
+        lastUpdated: new Date().toISOString().split('T')[0]
     })
 
     const handleTabChange = (event, newValue) => {
@@ -60,7 +61,7 @@ export default function Home({ portfolioKey, data, userInfo }) {
 
     const handleSubmit = async () => {
         setFormSubmitStatus(true);
-        console.log("portfolioData", portfolioData);
+        let newPortfolioData = { ...portfolioData, lastUpdatedOn: new Date() };
         let response;
         if (portfolioKey) {
             response = await fetch(`https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/portfolio/${portfolioKey}.json`, {
@@ -68,7 +69,7 @@ export default function Home({ portfolioKey, data, userInfo }) {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(portfolioData),
+                body: JSON.stringify(newPortfolioData),
             });
         } else {
             response = await fetch(`https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/portfolio.json`, {
@@ -76,7 +77,7 @@ export default function Home({ portfolioKey, data, userInfo }) {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(portfolioData),
+                body: JSON.stringify(newPortfolioData),
             });
         }
 

@@ -17,7 +17,7 @@ export default function Templates({ portfolioKey, portfolioData, }) {
 
     const handleTemplateSelect = async () => {
         setTemplateSelectStatus(true);
-        let newPortfolioData = { ...portfolioData, template: templateSelected };
+        let newPortfolioData = { ...portfolioData, template: templateSelected, lastUpdatedOn: new Date() };
 
         let response;
         if (portfolioKey) {

@@ -4,13 +4,26 @@ import CountUp from "react-countup";
 import { Card } from "@mui/material";
 import { decrypt } from "./api/auth/lib";
 import LinkedIn from "@/components/Images/Icons/LinkedIn";
-import { Users, Briefcase, Globe, ArrowRight, LayoutTemplate } from "lucide-react";
+import { Users, Globe, ArrowRight, LayoutTemplate } from "lucide-react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
-export default function Home() {
+export default function Home({ usersList, portfoliosList }) {
+    const [recentPortfolioChanges, setRecentPortfolioChanges] = useState([]);
+
     const stats = [
-        { label: "Global Users", value: 50000, icon: Users },
+        { label: "Global Users", value: Object.keys(usersList).length || 100, icon: Users },
         { label: "Templates", value: 2, icon: LayoutTemplate },
     ];
+
+    useEffect(() => {
+        const sortedPortfolios = Object.values(portfoliosList)?.sort((a, b) =>
+            new Date(b.lastUpdatedOn) - new Date(a.lastUpdatedOn)
+        );
+
+        console.log("sortedPortfolios", sortedPortfolios);
+        setRecentPortfolioChanges(sortedPortfolios?.slice(0, 3));
+    }, [])
 
     const features = [
         {
@@ -102,7 +115,7 @@ export default function Home() {
             {/* Features Section */}
             <div className="py-12">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <h2 className="text-3xl font-bold text-center mb-12">
+                    <h2 className="text-3xl font-medium text-center mb-12 text-[#4D3E5B]">
                         Why Choose ProfolioSpace?
                     </h2>
                     <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -119,19 +132,25 @@ export default function Home() {
             {/* Recent Updates Section */}
             <div className="bg-muted py-12">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <h2 className="text-3xl font-bold text-center mb-12">Recent Portfolio Updates</h2>
+                    <div className="text-3xl font-medium text-center mb-12 text-[#4D3E5B]">
+                        Recent portfolio updates
+                    </div>
                     <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
-                        {recentUpdates.map((update, index) => (
-                            <Card key={index} className="p-6 rounded-md">
+                        {recentPortfolioChanges.map((update, index) => (
+                            <Card
+                                key={index}
+                                className="p-6 rounded-md cursor-pointer"
+                                onClick={() => window.open(`https://profoliospace.in/${update.webAddress}`, "_blank")}
+                            >
                                 <div className="flex items-center space-x-4">
                                     <img
-                                        src={update.image}
-                                        alt={update.name}
+                                        src={update.selfieURL}
+                                        alt={update.fullName}
                                         className="h-12 w-12 rounded-full object-cover"
                                     />
                                     <div>
-                                        <h3 className="font-semibold">{update.name}</h3>
-                                        <p className="text-sm text-muted-foreground">{update.role}</p>
+                                        <h3 className="font-semibold">{update.fullName}</h3>
+                                        <p className="text-sm text-muted-foreground">{update.workTitle}</p>
                                     </div>
                                 </div>
                             </Card>
@@ -142,7 +161,7 @@ export default function Home() {
 
             {/* Footer */}
             <footer className="bg-background">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
                     <div className="flex justify-between items-center">
                         <p className="text-muted-foreground">
                             © 2024 ProfolioSpace. All rights reserved.
@@ -173,20 +192,42 @@ export async function getServerSideProps(context) {
     const { req, res } = context;
     const token = req?.cookies['token']
     const payload = await decrypt(token)
-    if (!payload || payload === null || payload === undefined) {
-        res.setHeader('Set-Cookie', [
-            'token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT;',
-        ]);
-        return {
-            props: {
-                login: false
-            }
-        }
-    } else {
+    let users = {};
+    let portfolios = {};
+
+    if (payload) {
         return {
             redirect: {
                 destination: '/dashboard',
                 permanent: false
+            }
+        }
+    } else {
+        res.setHeader('Set-Cookie', [
+            'token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT;',
+        ]);
+
+        try {
+            const usersResponse = await axios.get('https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/users.json');
+            users = usersResponse.data || {};
+
+            const portfoliosResponse = await axios.get('https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/portfolio.json');
+            portfolios = portfoliosResponse.data || {};
+
+            return {
+                props: {
+                    usersList: users,
+                    portfoliosList: portfolios,
+                }
+            }
+        }
+        catch (error) {
+            console.log(error);
+            return {
+                props: {
+                    usersList: [],
+                    portfoliosList: [],
+                }
             }
         }
     }
