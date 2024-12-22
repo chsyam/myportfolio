@@ -1,7 +1,6 @@
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import styles from "./Login.module.css"
-import { ArrowLeft } from "lucide-react";
+import { useEffect, useState } from "react";
 import { CircularProgress, Divider } from "@mui/material";
 
 export default function Login() {
@@ -19,10 +18,6 @@ export default function Login() {
             [e.target.name]: e.target.value
         })
     }
-
-    useEffect(() => {
-        document.title = "Login | profolioSpace"
-    }, [])
 
     const handleSubmit = async (e) => {
         setLoginStatus(true);

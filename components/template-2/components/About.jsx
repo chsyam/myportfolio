@@ -19,21 +19,21 @@ export default function About({ portfolioData }) {
     }
 
     return (
-        <section id="about" className="pt-20 pb-2 px-4">
+        <section id="about" className="pt-12 sm:pt-20 pb-2 px-4">
             <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12">
                 <div className="lg:w-1/2 space-y-8">
                     <div>
-                        <div className="text-5xl font-semibold leading-tight">
+                        <div className="text-3xl sm:text-5xl font-semibold leading-tight">
                             Hi, I'm {portfolioData?.fullName}
                         </div>
-                        <div className="text-3xl font-medium my-3 bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
+                        <div className="text-2xl sm:text-3xl font-medium my-3 bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
                             {portfolioData?.workTitle}
                         </div>
                     </div>
-                    <p className="text-gray-700 text-lg leading-relaxed">
+                    <p className="text-gray-600 text-md sm:text-[18px] leading-relaxed">
                         {portfolioData?.description}
                     </p>
-                    <div className="flex gap-6">
+                    <div className="flex flex-wrap items-center gap-4">
                         {
                             Object.keys(portfolioData?.platformLinks || {}).map((platform, index) => (
                                 <div key={index}
@@ -52,7 +52,7 @@ export default function About({ portfolioData }) {
                 </div>
                 <div >
                     <div className="relative">
-                        <div className="w-72 h-72 rounded-full overflow-hidden border-4 border-purple-500 shadow-lg">
+                        <div className="w-56 h-56 sm:w-72 sm:h-72 rounded-full overflow-hidden border-4 border-purple-500 shadow-lg">
                             <img
                                 src={`${portfolioData?.selfieURL}`}
                                 alt="Jane Smith"

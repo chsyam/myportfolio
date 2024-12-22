@@ -75,7 +75,7 @@ export default function Domain({ portfolioKey, portfolioData, setPortfolioData }
                     </div>
                 </div>
             </div>
-            <div className={`bg-[#4d3e5b] text-[#fff] rounded-md py-[10px] px-[20px] text-[16px] cursor-pointer my-6 w-fit`}
+            <div className={`bg-[#4d3e5b] text-[#fff] rounded-md p-[10px] text-[16px] cursor-pointer my-6 ml-3 w-fit`}
                 onClick={() => handleSubmit()}
                 style={{
                     opacity: domainSubmitStatus ? 0.7 : 1,
@@ -89,7 +89,7 @@ export default function Domain({ portfolioKey, portfolioData, setPortfolioData }
                             saving....
                         </div>
                     ) : (
-                        <div className="flex items-center justify-center flex-nowrap gap-4">
+                        <div className="flex items-center justify-center flex-nowrap gap-1">
                             <Save /> save changes
                         </div>
                     )

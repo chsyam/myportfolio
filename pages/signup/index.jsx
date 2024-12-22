@@ -1,10 +1,9 @@
 "use client";
 import Link from "next/link";
-import styles from "./Signup.module.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
+import styles from "./Signup.module.css";
 import { CircularProgress, Divider } from "@mui/material";
-import { ArrowLeft } from "lucide-react";
 
 export default function Signup({ usersData }) {
     const router = useRouter();
@@ -19,10 +18,6 @@ export default function Signup({ usersData }) {
         confirmPassword: "",
         webAddress: "",
     })
-
-    useEffect(() => {
-        document.title = "Register | profolioSpace"
-    }, [])
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;

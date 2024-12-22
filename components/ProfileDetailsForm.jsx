@@ -114,13 +114,15 @@ export default function ProfileDetailsForm({ portfolioData, setPortfolioData, ha
             },
             (error) => {
                 console.error("Error uploading file:", error);
+                setFile(null);
             },
             () => {
                 getDownloadURL(uploadTask.snapshot.ref).then((url) => {
                     setPortfolioData({
                         ...portfolioData,
                         resumeURL: url
-                    })
+                    });
+                    setFile(null);
                 });
             }
         );
@@ -144,13 +146,15 @@ export default function ProfileDetailsForm({ portfolioData, setPortfolioData, ha
             },
             (error) => {
                 console.error("Error uploading file:", error);
+                setSelfie(null);
             },
             () => {
                 getDownloadURL(uploadTask.snapshot.ref).then((url) => {
                     setPortfolioData({
                         ...portfolioData,
                         selfieURL: url
-                    })
+                    });
+                    setSelfie(null);
                 });
             }
         );
@@ -162,10 +166,26 @@ export default function ProfileDetailsForm({ portfolioData, setPortfolioData, ha
         setSkillSearchTerm("");
     }
 
+    const resumeTrashHandler = () => {
+        setPortfolioData({
+            ...portfolioData, resumeURL: ""
+        });
+        setUploadProgress(0);
+        setFile(null);
+    }
+
+    const selfieTrashHandler = () => {
+        setPortfolioData({
+            ...portfolioData, selfieURL: ""
+        })
+        setSelfieProgess(0);
+        setSelfie(null);
+    }
+
     return (
         <div>
-            <div className="w-[100%] border-x-2 border-b-2 border-[#E3E3E3]">
-                <div className="px-6 py-1">
+            <div className="w-[100%] sm:border-x-2 sm:border-b-2 sm:border-gray-400">
+                <div className="px-2 py-1 sm:px-6">
                     <div className={styles.inputField}>
                         <label>Full Name</label><br />
                         <input
@@ -202,46 +222,57 @@ export default function ProfileDetailsForm({ portfolioData, setPortfolioData, ha
                     <Divider />
                     <div className={styles.inputField}>
                         <label>Photo</label>
-                        <label htmlFor="file-upload" className={styles.photoLabel}>
-                            <div className={styles.userIcon}>
-                                {
-                                    (portfolioData.selfieURL === "") ? (
-                                        <CircleUserRound size={150} strokeWidth={1} color="gray" />
-                                    ) : (
-                                        <Image
-                                            alt="user image"
-                                            src={`${portfolioData.selfieURL}`}
-                                            height={150} width={150}
-                                            priority={true}
-                                            style={{ boxShadow: '1px 1px 6px black' }}
-                                        />
-                                    )
-                                }
+                        <div className="flex items-center flex-wrap">
+                            <label htmlFor="file-upload" className={styles.photoLabel}>
+                                <div className={styles.userIcon}>
+                                    {
+                                        (portfolioData.selfieURL === "") ? (
+                                            <CircleUserRound size={150} strokeWidth={1} color="gray" />
+                                        ) : (
+                                            <Image
+                                                alt="user image"
+                                                src={`${portfolioData.selfieURL}`}
+                                                height={125} width={125}
+                                                priority={true}
+                                                style={{ boxShadow: '0 25px 25px rgb(0, 0, 0, 0.3)' }}
+                                            />
+                                        )
+                                    }
+                                </div>
+                                <div className={styles.labelText}>
+                                    <Pencil />Edit Photo
+                                </div>
+                            </label>
+                            <div className="cursor-pointer" onClick={() => selfieTrashHandler()}>
+                                <Trash2 color="red" />
                             </div>
-                            <div className={styles.labelText}>
-                                <Pencil />Edit Photo
-                            </div>
-                        </label>
+                        </div>
                         <div className="flex gap-4 justify-left flex-wrap">
                             <div className="my-auto">
                                 {selfie ? selfie?.name : ""}
                             </div>
-                            <div
-                                onClick={() => handleSelfieUpload()}
-                                className={styles.updateButton}
-                            >
-                                <Upload />Upload
-                            </div>
+                            {
+                                (selfie && selfieProgess === 0) &&
+                                <div
+                                    onClick={() => handleSelfieUpload()}
+                                    className={styles.updateButton}
+                                >
+                                    <Upload />Upload
+                                </div>
+                            }
                         </div>
                         <input style={{ display: 'none' }}
-                            onChange={(event) => setSelfie(event.target.files[0])}
+                            onChange={(event) => {
+                                setSelfie(event.target.files[0]);
+                                setSelfieProgess(0);
+                            }}
                             id="file-upload" type="file"
                         />
                         {
-                            (selfieProgess > 0 && selfieProgess <= 100) && (
-                                <Box sx={{ display: 'flex', alignItems: 'center', marginTop: '20px' }}>
+                            (selfieProgess > 0 && selfieProgess !== 0) && (
+                                <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', marginTop: '20px' }}>
                                     <Box sx={{ width: '250px', mr: 1 }}>
-                                        <LinearProgress variant="determinate" value={Math.round(selfieProgess)} />
+                                        <LinearProgress sx={{ height: '10px', borderRadius: '10px' }} variant="determinate" value={Math.round(selfieProgess)} />
                                     </Box>
                                     <Box sx={{ minWidth: 35 }}>
                                         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
@@ -251,42 +282,60 @@ export default function ProfileDetailsForm({ portfolioData, setPortfolioData, ha
                                 </Box>
                             )
                         }
+                        {
+                            selfieProgess === 100 && (
+                                <div className="text-gray-400 mt-2">
+                                    (please save the portfolio before refreshing the page)
+                                </div>
+                            )
+                        }
                     </div>
                     <Divider />
                     <div className={styles.inputField}>
                         <label>Resume</label>
-                        <label htmlFor="resume-upload" className={styles.photoLabel}>
-                            <div className={styles.resumeIcon}>
-                                {portfolioData.resumeURL === '' ? "No file selected" : (
-                                    <Link
-                                        className="hover:underline hover:underline-offset-4 text-blue-500"
-                                        href={`${portfolioData.resumeURL}`}
-                                        target="_blank"
-                                    >
-                                        previous resume
-                                    </Link>
-                                )}
+                        <div className="flex items-center flex-wrap">
+                            <label htmlFor="resume-upload" className={styles.photoLabel}>
+                                <div className={styles.resumeIcon}>
+                                    {portfolioData.resumeURL === '' ? "No file selected" : (
+                                        <Link
+                                            className="hover:underline hover:underline-offset-4 text-blue-500"
+                                            href={`${portfolioData.resumeURL}`}
+                                            target="_blank"
+                                        >
+                                            previous resume
+                                        </Link>
+                                    )}
+                                </div>
+                                <div className={styles.labelText}>
+                                    <Pencil size={20} /> Edit Resume
+                                </div>
+                            </label>
+                            <div className="cursor-pointer" onClick={() => resumeTrashHandler()}>
+                                <Trash2 color="red" />
                             </div>
-                            <div className={styles.labelText}>
-                                <Pencil size={20} /> Edit Resume
-                            </div>
-                        </label>
+                        </div>
                         <div className="flex gap-4 justify-left flex-wrap">
                             <div className="my-auto">
                                 {file ? file?.name : ""}
                             </div>
-                            <div
-                                onClick={() => { handleFileUpload() }}
-                                className={styles.updateButton}
-                            ><Upload />Upload</div>
+                            {
+                                (file && uploadProgress === 0) &&
+                                <div
+                                    onClick={() => { handleFileUpload() }}
+                                    className={styles.updateButton}
+                                ><Upload />Upload</div>
+                            }
                         </div>
                         <input style={{ display: 'none' }}
-                            onChange={(event) => setFile(event.target.files[0])}
+                            onChange={(event) => {
+                                setFile(event.target.files[0]);
+                                setUploadProgress(0);
+                            }}
                             id="resume-upload" type="file"
                         />
                         {
                             (uploadProgress > 0 && uploadProgress <= 100) && (
-                                <Box sx={{ display: 'flex', alignItems: 'center', marginTop: '20px' }}>
+                                <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', marginTop: '20px' }}>
                                     <Box sx={{ width: '250px', mr: 1 }}>
                                         <LinearProgress variant="determinate" value={Math.round(uploadProgress)} />
                                     </Box>
@@ -298,6 +347,13 @@ export default function ProfileDetailsForm({ portfolioData, setPortfolioData, ha
                                 </Box>
                             )
                         }
+                        {
+                            uploadProgress === 100 && (
+                                <div className="text-gray-400 mt-2">
+                                    (please save the portfolio before refreshing the page)
+                                </div>
+                            )
+                        }
                     </div>
                     <Divider />
                     <div className={styles.inputField}>
@@ -307,7 +363,7 @@ export default function ProfileDetailsForm({ portfolioData, setPortfolioData, ha
                                 Object.keys(portfolioData.platformLinks || {}).map((key, index) => {
                                     return (
                                         <div key={index} className={styles.addedPlatform}>
-                                            <div className="">{key} :</div>
+                                            <div className="">{key}</div>
                                             <div className={styles.inputLink}>
                                                 <input type="text"
                                                     placeholder="Enter link"
@@ -368,17 +424,16 @@ export default function ProfileDetailsForm({ portfolioData, setPortfolioData, ha
                                 })
                             }
                         </div>
-                        <div className="text-sm text-gray-500 flex gap-2">
-                            Click enter or click on
-                            <CornerDownLeft size={16} color="black" strokeWidth={3} />
-                            button after entering skill. Don't include special characters except dot(.) hyphen(-)
+                        <div className="text-sm text-gray-400 mb-4">
+                            Don't include special characters except dot(.) hyphen(-).
+                            After entering skill Click enter or click on
                         </div>
                         <div className={styles.searchBar}>
                             <input
                                 value={skillSearchTerm}
                                 onChange={(e) => setSkillSearchTerm(e.target.value)}
                                 type="text"
-                                placeholder="Enter your skills Next.js, React JS, MySQL, etc."
+                                placeholder="Enter skills Next.js, MySQL, etc."
                                 onKeyDown={(e) => {
                                     if (e.key === "Enter") {
                                         handleAddingSkill(skillSearchTerm)
@@ -389,29 +444,13 @@ export default function ProfileDetailsForm({ portfolioData, setPortfolioData, ha
                                 className="p-[10px] rounded-full bg-[#d2d2d2] cursor-pointer"
                                 onClick={() => handleAddingSkill(skillSearchTerm)}
                             >
-                                <CornerDownLeft size={30} strokeWidth={3} />
+                                <CornerDownLeft size={24} strokeWidth={3} />
                             </div>
                         </div>
-                        {/* <div className={styles.skillItems}>
-                            {
-                                filteredSkills.map((skill, index) => {
-                                    return (
-                                        <div
-                                            onClick={() => handleSkillClick(skill)}
-                                            key={index}
-                                            className={styles.platform}
-                                        >
-                                            <Plus />
-                                            {skill.name}
-                                        </div>
-                                    )
-                                })
-                            }
-                        </div> */}
                     </div>
                 </div>
             </div>
-            <div className={`bg-[#4d3e5b] text-[#fff] rounded-md py-[10px] px-[20px] text-[16px] cursor-pointer my-6 w-fit float-right`}
+            <div className={`bg-[#4d3e5b] text-[#fff] rounded-md p-[10px] text-[16px] cursor-pointer my-6 ml-3 w-fit`}
                 onClick={() => handleSubmit()}
                 style={{
                     opacity: formSubmitStatus ? 0.7 : 1,
@@ -425,12 +464,12 @@ export default function ProfileDetailsForm({ portfolioData, setPortfolioData, ha
                             saving....
                         </div>
                     ) : (
-                        <div className="flex items-center justify-center flex-nowrap gap-4">
+                        <div className="flex items-center justify-center flex-nowrap gap-1">
                             <Save /> save changes
                         </div>
                     )
                 }
             </div>
-        </div>
+        </div >
     );
 }

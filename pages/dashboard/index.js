@@ -1,11 +1,11 @@
-import styles from "./../../styles/Dashboard.module.css";
-import { useEffect, useState } from "react";
 import axios from "axios";
-import { decrypt } from "../api/auth/lib";
-import { Box, Tab, Tabs } from "@mui/material";
-import ProfileDetailsForm from "@/components/ProfileDetailsForm";
-import Templates from "@/components/Templates";
 import Domain from "@/components/Domain";
+import { decrypt } from "../api/auth/lib";
+import { useEffect, useState } from "react";
+import Templates from "@/components/Templates";
+import { Box, Tab, Tabs } from "@mui/material";
+import styles from "./../../styles/Dashboard.module.css";
+import ProfileDetailsForm from "@/components/ProfileDetailsForm";
 
 export default function Home({ portfolioKey, data, userInfo }) {
     const [value, setValue] = useState(0);
@@ -95,7 +95,7 @@ export default function Home({ portfolioKey, data, userInfo }) {
 
     return (
         <div className={styles.dashboard}>
-            <Box sx={{ border: 1, borderColor: 'divider', width: '100%' }}>
+            <Box sx={{ border: 2, borderColor: 'divider', width: '100%' }}>
                 <Tabs
                     value={value}
                     onChange={handleTabChange}
@@ -104,9 +104,15 @@ export default function Home({ portfolioKey, data, userInfo }) {
                     aria-label="scrollable auto tabs example"
                     sx={{ bgcolor: '#FFF' }}
                 >
-                    <Tab sx={{ bgcolor: '#FFF' }} label="Profile" />
-                    <Tab sx={{ bgcolor: '#FFF' }} label="Templates" />
-                    <Tab sx={{ bgcolor: '#FFF' }} label="Domain" />
+                    <Tab
+                        sx={{ textTransform: 'none', fontSize: '18px', fontFamily: 'Poppins' }} label="Profile"
+                    />
+                    <Tab
+                        sx={{ textTransform: 'none', fontSize: '18px', fontFamily: 'Poppins' }} label="Templates"
+                    />
+                    <Tab
+                        sx={{ textTransform: 'none', fontSize: '18px', fontFamily: 'Poppins' }} label="Domain"
+                    />
                 </Tabs>
             </Box>
             {

@@ -1,17 +1,41 @@
 import axios from "axios";
 import dynamic from "next/dynamic";
 
-export default function EndUserView({ data, domainName }) {
+export default function EndUserView({ data, domainName, foundDomain }) {
     console.log(`fetching data for ${domainName}`);
-
     const Template = dynamic(() => import(`@/components/template-${data?.template || 1}`), {
         ssr: false,
     });
 
     return (
         <div>
-            <Template portfolioData={data} />
-        </div>
+            {
+                foundDomain ? (
+                    <Template portfolioData={data} />
+                ) : (
+                    <div className="text-center mt-[15%] select-none px-4">
+                        <div className="text-2xl font-semibold">
+                            Page not found 🤭
+                        </div>
+                        <div className="my-4 text-[18px] text-gray-600">
+                            We are very sorry, but we couldn't find this particular page (
+                            <span className="text-black font-semibold">/{domainName}</span>
+                            ).
+                        </div>
+                        <div className="my-4 text-[18px] text-gray-600">
+                            Please check whether you entered it correctly.
+                        </div>
+                        <div className="my-4 text-[18px] text-gray-600">
+                            Meanwhile, visit our site to explore more.
+                            <a href="https://www.profoliospace.in/" className="text-blue-700 font-semibold hover:underline underline-offset-4 ml-2">
+                                profoliospace.in
+                            </a>
+                        </div>
+                    </div>
+                )
+            }
+
+        </div >
     );
 }
 
@@ -46,6 +70,7 @@ export async function getServerSideProps(context) {
                 props: {
                     data: emptyPortfolioData,
                     domainName: domainName,
+                    foundDomain: false
                 }
             }
         }
@@ -55,6 +80,7 @@ export async function getServerSideProps(context) {
                 props: {
                     data: emptyPortfolioData,
                     domainName: domainName,
+                    foundDomain: false
                 }
             }
         }
@@ -62,6 +88,7 @@ export async function getServerSideProps(context) {
             props: {
                 data: data[objId],
                 domainName: domainName,
+                foundDomain: true
             }
         }
     }
@@ -71,6 +98,7 @@ export async function getServerSideProps(context) {
             props: {
                 data: emptyPortfolioData,
                 domainName: domainName,
+                foundDomain: false
             }
         }
     }

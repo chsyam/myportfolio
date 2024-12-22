@@ -1,9 +1,15 @@
 .dashboard {
-	padding: 2%;
+	padding: 20px;
+}
+
+@media (max-width:640px) {
+	.dashboard {
+		padding: 0;
+	}
 }
 
 .inputField {
-	margin: 30px 0;
+	margin: 20px 0;
 	padding: 20px;
 	background-color: #FFF;
 	border: 1px solid #e8e8e8;
@@ -41,7 +47,7 @@
 
 .platform {
 	padding: 5px 10px;
-	background: #8bffa2;
+	background: #dadada;
 	display: flex;
 	flex-wrap: nowrap;
 	justify-content: center;
@@ -51,16 +57,27 @@
 	border-radius: 5px;
 	cursor: pointer;
 	font-weight: 500;
+	font-size: 16px;
 }
 
 .addedPlatform,
 .addedSkill {
-	margin: 10px 0;
+	margin: 5px 0;
 	display: flex;
 	justify-content: left;
 	align-items: center;
-	gap: 10px;
+	gap: 5px;
 	font-weight: 500;
+	font-size: 16px;
+}
+
+@media (max-width:640px) {
+
+	.platform,
+	.addedPlatform,
+	.addedSkill {
+		font-size: 15px;
+	}
 }
 
 .inputLink {
@@ -93,11 +110,11 @@
 	display: flex;
 	align-items: center;
 	flex-wrap: nowrap;
-	gap: 5px;
+	gap: 3px;
 	background-color: #dadada;
 	width: max-content;
-	padding: 5px 10px;
-	border-radius: 2px;
+	padding: 5px 3px 5px 10px;
+	border-radius: 4px;
 }
 
 .deleteButton {
@@ -113,16 +130,15 @@
 }
 
 .searchBar {
-	height: 40px;
 	display: flex;
 	align-items: center;
 	justify-content: left;
-	flex-wrap: nowrap;
 	gap: 10px;
 	margin: 5px 0;
 }
 
 .searchBar input {
+	height: 40px;
 	flex-grow: 1;
 	border: 1px solid #bdbdbd;
 	background-color: #f3f4f6;
@@ -132,7 +148,7 @@
 	background-color: #4d3e5b;
 	color: #fff;
 	border-radius: 4px;
-	padding: 10px 20px;
+	padding: 7px 15px;
 	font-size: 16px;
 	display: flex;
 	align-items: center;
@@ -158,7 +174,6 @@
 	width: 150px;
 	height: 150px;
 	background: #f5f6f8;
-	display: flex;
 	justify-content: center;
 	align-items: center;
 	font-size: 40px;
@@ -167,7 +182,6 @@
 }
 
 .resumeIcon {
-	display: flex;
 	justify-content: center;
 	align-items: center;
 	font-size: 16px;
@@ -180,8 +194,9 @@
 	border-radius: 30px;
 	padding: 10px 20px;
 	font-size: 16px;
-	font-weight: 600;
+	font-weight: 500;
 	display: flex;
+	flex-wrap: wrap;
 	align-items: center;
 	gap: 5px;
 	justify-content: center;

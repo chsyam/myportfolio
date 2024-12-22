@@ -9,9 +9,9 @@ export default function Skills({ portfolioData }) {
                         </div>
                     )
                 }
-                <div className="flex flex-wrap justify-center gap-8">
+                <div className="flex flex-wrap justify-center gap-3 sm:gap-6">
                     {portfolioData?.skills?.map((tech) => (
-                        <div key={tech.name} className="flex-1 bg-gray-800/50 p-6 rounded-lg">
+                        <div key={tech.name} className="bg-gray-600/70 px-4 py-2 rounded-md">
                             <div className="text-center">
                                 <span className="font-medium">{tech.name}</span>
                             </div>

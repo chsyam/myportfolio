@@ -22,7 +22,7 @@ export default function ConnectWithMe({ portfolioData }) {
         <div className={styles.skillsContainer}>
             {
                 portfolioData?.platformLinks && Object.keys(portfolioData?.platformLinks || {}).length > 0 && (
-                    <div className="text-3xl font-medium my-8 text-center text-gray-800">
+                    <div className="text-2xl sm:text-3xl font-medium my-8 text-center text-gray-800">
                         Connect with me here
                     </div>
                 )
