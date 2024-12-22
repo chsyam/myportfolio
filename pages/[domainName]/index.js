@@ -57,7 +57,6 @@ export async function getServerSideProps(context) {
 
     try {
         domainName = context.params["domainName"]
-        console.log(domainName);
     } catch (error) {
         console.log(error)
     }

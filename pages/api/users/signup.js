@@ -36,10 +36,9 @@ export default async function handler(req, res) {
             },
             body: JSON.stringify(newUser),
         });
-        console.log(response);
+        // console.log(response);
 
         if (response.status === 200) {
-            console.log(newPortfolio)
             const portfolioResponse = await fetch(`https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/portfolio.json`, {
                 method: 'POST',
                 headers: {
@@ -47,7 +46,7 @@ export default async function handler(req, res) {
                 },
                 body: JSON.stringify(newPortfolio),
             });
-            console.log(portfolioResponse)
+            // console.log(portfolioResponse)
             return res.status(200).json({
                 userId: userId, hashedPassword: hashedPassword, messgae: "User saved succesfully & Portfolio saved successfully."
             });

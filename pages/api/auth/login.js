@@ -8,13 +8,12 @@ export default async function loginHandler(req, res) {
     try {
         const response = await axios.get(`https://db-educationforjobs-default-rtdb.asia-southeast1.firebasedatabase.app/users.json`);
         const users = response.data;
-        console.log(users);
         const userObjId = Object.keys(users).find(key => users[key].email === email);
-        console.log("user", userObjId)
+
         if (users[userObjId]) {
             const isAuthenticated = await bcrypt.compare(password, users[userObjId].password);
             if (isAuthenticated) {
-                console.log("user =>", users[userObjId]);
+                // console.log("authenticated user details", users[userObjId]);
                 const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
                 const session = await encrypt({
                     username: users[userObjId]?.username,
@@ -31,7 +30,7 @@ export default async function loginHandler(req, res) {
                 }, process.env.JWT_SECRET, {
                     expiresIn: '1440m',
                 })
-                console.log(token)
+                // console.log(token)
                 return res.status(200).json({ token: token, message: 'Login successful' });
             } else {
                 console.log("Invalid Credentials...!");

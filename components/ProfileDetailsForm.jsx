@@ -131,7 +131,7 @@ export default function ProfileDetailsForm({ portfolioData, setPortfolioData, ha
     const handleSelfieUpload = () => {
         if (!selfie) return;
         if (selfie?.type.includes("image")) {
-            console.log("image validated")
+            console.log("image validated");
         } else {
             setSelfieError("Please upload a valid image of type .jpeg/.jpg/.png")
             return;

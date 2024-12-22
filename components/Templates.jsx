@@ -9,7 +9,7 @@ export default function Templates({ portfolioKey, portfolioData, }) {
     const [templateSelected, setTemplateSelected] = useState(portfolioData?.template || '1');
 
     useEffect(() => {
-        console.log("template selected", portfolioData?.template)
+        console.log("template selected => ", portfolioData?.template)
         if (portfolioData?.template) {
             setTemplateSelected(portfolioData?.template);
         }
@@ -39,9 +39,9 @@ export default function Templates({ portfolioKey, portfolioData, }) {
         }
 
         const result = await response.json();
-        console.log('Update successful:', result);
+        // console.log('Update successful:', result);
         if (result) {
-            console.log("saved to database. successfully...!")
+            // console.log("saved to database. successfully...!")
             alert("saved to database. successfully...!")
             window.location.reload();
         } else {

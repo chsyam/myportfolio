@@ -5,7 +5,6 @@ import Layout from './../components/Layout/layout';
 import UserNavbar from '@/components/Navbar/Header';
 
 function MyApp({ Component, pageProps }) {
-    console.log("=>", pageProps)
     const router = useRouter();
     const getTitle = () => {
         if (router.pathname.includes("dashboard"))

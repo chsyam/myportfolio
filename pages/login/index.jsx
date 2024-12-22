@@ -8,8 +8,8 @@ export default function Login() {
     const [loginError, setLoginError] = useState("");
     const [loginSuccess, setLoginSuccess] = useState("");
     const [formData, setFormData] = useState({
-        email: "syamkumar6845@gmail.com",
-        password: "Syam@190543"
+        email: "",
+        password: ""
     })
 
     const handleChange = (e) => {

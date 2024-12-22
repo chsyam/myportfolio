@@ -40,9 +40,9 @@ export default function Domain({ portfolioKey, portfolioData, setPortfolioData }
         }
 
         const result = await response.json();
-        console.log('Update successful:', result);
+        // console.log('Update successful:', result);
         if (result) {
-            console.log("saved to database. successfully...!")
+            // console.log("saved to database. successfully...!")
             alert("saved to database. successfully...!")
             window.location.reload();
         } else {

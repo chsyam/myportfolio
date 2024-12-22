@@ -4,7 +4,7 @@ import CountUp from "react-countup";
 import { Card } from "@mui/material";
 import { decrypt } from "./api/auth/lib";
 import LinkedIn from "@/components/Images/Icons/LinkedIn";
-import { Users, Globe, ArrowRight, LayoutTemplate } from "lucide-react";
+import { Users, Globe, ArrowRight, LayoutTemplate, Camera, CircleUserRound } from "lucide-react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -21,7 +21,7 @@ export default function Home({ usersList, portfoliosList }) {
             new Date(b.lastUpdatedOn) - new Date(a.lastUpdatedOn)
         );
 
-        console.log("sortedPortfolios", sortedPortfolios);
+        // console.log("sortedPortfolios", sortedPortfolios);
         setRecentPortfolioChanges(sortedPortfolios?.slice(0, 3));
     }, [])
 
@@ -143,11 +143,20 @@ export default function Home({ usersList, portfoliosList }) {
                                 onClick={() => window.open(`https://profoliospace.in/${update.webAddress}`, "_blank")}
                             >
                                 <div className="flex items-center space-x-4">
-                                    <img
-                                        src={update.selfieURL}
-                                        alt={update.fullName}
-                                        className="h-12 w-12 rounded-full object-cover"
-                                    />
+                                    {
+                                        update?.selfieURL ? (
+                                            <img
+                                                src={update.selfieURL}
+                                                alt={update.fullName}
+                                                className="h-12 w-12 rounded-full object-cover  shadow-xl shadow-stone-400"
+                                            />
+                                        ) : (
+                                            <div className="h-12 w-12 rounded-full">
+                                                <CircleUserRound className="h-12 w-12" strokeWidth={1} color="gray" />
+                                            </div>
+                                        )
+                                    }
+
                                     <div>
                                         <h3 className="font-semibold">{update.fullName}</h3>
                                         <p className="text-sm text-muted-foreground">{update.workTitle}</p>

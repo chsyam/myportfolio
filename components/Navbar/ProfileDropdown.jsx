@@ -11,7 +11,6 @@ const blogsRedirecter = () => {
 }
 
 const ProfileDropdown = ({ authenticated, username }) => {
-    console.log(authenticated, username);
     const menuItems = [
         {
             icon: House,
