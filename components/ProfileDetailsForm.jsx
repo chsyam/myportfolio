@@ -184,7 +184,7 @@ export default function ProfileDetailsForm({ portfolioData, setPortfolioData, ha
 
     return (
         <div>
-            <div className="w-[100%] sm:border-x-2 sm:border-b-2 sm:border-gray-400">
+            <div className="w-[100%] sm:border-x sm:border-b sm:border-gray-300">
                 <div className="px-2 py-1 sm:px-6">
                     <div className={styles.inputField}>
                         <label>Full Name</label><br />
