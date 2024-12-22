@@ -8,9 +8,6 @@ function MyApp({ Component, pageProps }) {
     console.log("=>", pageProps)
     const router = useRouter();
     const getTitle = () => {
-        if (!pageProps.foundDomain) {
-            return "OOPS"
-        }
         if (router.pathname.includes("dashboard"))
             return "Dashboard | ProfolioSpace";
         else if (router.pathname.includes("login"))
@@ -21,6 +18,8 @@ function MyApp({ Component, pageProps }) {
             return "Home | ProfolioSpace";
         else if (router.pathname.includes("blogs"))
             return `Blogs | ProfolioSpace`;
+        else if (!pageProps.foundDomain && router.pathname !== "/")
+            return "Oh no🤭 Page not found | ProfolioSpace"
         else
             return `${pageProps.data?.fullName} 's portfolio | ProfolioSpace`;
 
