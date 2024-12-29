@@ -27,6 +27,7 @@ function MyApp({ Component, pageProps }) {
     return (
         <Layout>
             <Head>
+                <meta name="google-adsense-account" content="ca-pub-9035732498574241"></meta>
                 <title>{getTitle()}</title>
             </Head>
             {
