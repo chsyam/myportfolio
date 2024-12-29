@@ -3,6 +3,7 @@ import "./../styles/globals.css";
 import { useRouter } from 'next/router';
 import Layout from './../components/Layout/layout';
 import UserNavbar from '@/components/Navbar/Header';
+import Script from 'next/script';
 
 function MyApp({ Component, pageProps }) {
     const router = useRouter();
@@ -29,6 +30,8 @@ function MyApp({ Component, pageProps }) {
             <Head>
                 <meta name="google-adsense-account" content="ca-pub-9035732498574241"></meta>
                 <title>{getTitle()}</title>
+                <Script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9035732498574241"
+                    crossorigin="anonymous"></Script>
             </Head>
             {
                 (router.pathname.includes("dashboard") || router.pathname.includes("login") || router.pathname.includes("signup")) && (
@@ -36,6 +39,16 @@ function MyApp({ Component, pageProps }) {
                 )
             }
             <Component {...pageProps} />
+
+            <ins className="adsbygoogle"
+                style={{ display: "block" }}
+                data-ad-client="ca-pub-9035732498574241"
+                data-ad-slot="1656184874"
+                data-ad-format="auto"
+                data-full-width-responsive="true"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({ });
+            </script>
         </Layout>
     );
 }

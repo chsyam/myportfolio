@@ -1,12 +1,15 @@
 "use client";
+import axios from "axios";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import CountUp from "react-countup";
 import { Card } from "@mui/material";
 import { decrypt } from "./api/auth/lib";
+import { useEffect, useState } from "react";
 import LinkedIn from "@/components/Images/Icons/LinkedIn";
 import { Users, Globe, ArrowRight, LayoutTemplate, Camera, CircleUserRound } from "lucide-react";
-import axios from "axios";
-import { useEffect, useState } from "react";
+
+const AdScenceComponent = dynamic(() => import('./../components/AdScenceComponent'), { ssr: false });
 
 export default function Home({ usersList, portfoliosList }) {
     const [recentPortfolioChanges, setRecentPortfolioChanges] = useState([]);
@@ -40,27 +43,8 @@ export default function Home({ usersList, portfoliosList }) {
         }
     ];
 
-    const recentUpdates = [
-        {
-            name: "Sarah Chen",
-            role: "UX Designer",
-            image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400"
-        },
-        {
-            name: "Alex Rivera",
-            role: "Full Stack Developer",
-            image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400"
-        },
-        {
-            name: "Emma Wilson",
-            role: "Graphic Designer",
-            image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400"
-        }
-    ];
-
     return (
         <div className="min-h-screen bg-background">
-            {/* Hero Section */}
             <div className="relative overflow-hidden">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
                     <div className="text-center">
@@ -95,7 +79,7 @@ export default function Home({ usersList, portfoliosList }) {
                 </div>
             </div>
 
-            {/* Stats Section */}
+
             <div className="bg-muted py-12">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
@@ -112,7 +96,10 @@ export default function Home({ usersList, portfoliosList }) {
                 </div>
             </div>
 
-            {/* Features Section */}
+            <div className="w-full border border-gray-100">
+                <AdScenceComponent />
+            </div>
+
             <div className="py-12">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <h2 className="text-3xl font-medium text-center mb-12 text-[#4D3E5B]">
