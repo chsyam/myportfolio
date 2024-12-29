@@ -3,16 +3,16 @@
 import { useEffect } from "react";
 
 const AdScenceComponent = () => {
-
     useEffect(() => {
         if (typeof window !== 'undefined') {
             try {
                 (window.adsbygoogle = window.adsbygoogle || []).push({});
             } catch (error) {
-                console.error('AdSense error:', err);
+                console.error('Google AdSense error:', err);
             }
         }
     }, [])
+
     return (
         <div>
             <ins className="adsbygoogle"

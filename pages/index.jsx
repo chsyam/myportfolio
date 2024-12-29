@@ -9,7 +9,10 @@ import { useEffect, useState } from "react";
 import LinkedIn from "@/components/Images/Icons/LinkedIn";
 import { Users, Globe, ArrowRight, LayoutTemplate, Camera, CircleUserRound } from "lucide-react";
 
-const AdScenceComponent = dynamic(() => import('./../components/AdScenceComponent'), { ssr: false });
+const AdScenceComponent = dynamic(() => import('./../components/AdScenceComponent'), {
+    ssr: false,
+    loading: () => <div style={{ height: "90px" }}></div>,
+});
 
 export default function Home({ usersList, portfoliosList }) {
     const [recentPortfolioChanges, setRecentPortfolioChanges] = useState([]);
@@ -79,7 +82,6 @@ export default function Home({ usersList, portfoliosList }) {
                 </div>
             </div>
 
-
             <div className="bg-muted py-12">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
@@ -96,7 +98,7 @@ export default function Home({ usersList, portfoliosList }) {
                 </div>
             </div>
 
-            <div className="w-full border border-gray-100">
+            <div className="min-h-[20px] w-full border border-gray-100">
                 <AdScenceComponent />
             </div>
 

@@ -96,6 +96,9 @@ export default function Home({ portfolioKey, data, userInfo }) {
 
     return (
         <div className={styles.dashboard}>
+            <div className="text-center mb-4 mt-2" onClick={() => setValue(2)}>
+                Your Portfolio is live at <span className="pl-1 underline underline-offset-2">{data?.webAddress}</span>. Click here to redirect
+            </div>
             <Box sx={{ border: 2, borderColor: 'divider', width: '100%' }}>
                 <Tabs
                     value={value}
